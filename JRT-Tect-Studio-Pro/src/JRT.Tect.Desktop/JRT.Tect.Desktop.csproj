@@ -3,9 +3,11 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <AssemblyName>JRT_Tech_ANALIST_Pro_Native</AssemblyName>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\JRT.Tect.Core\JRT.Tect.Core.csproj" />
     <ProjectReference Include="..\JRT.Tect.Hardware\JRT.Tect.Hardware.csproj" />

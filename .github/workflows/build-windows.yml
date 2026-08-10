@@ -80,7 +80,8 @@ jobs:
         with:
           name: JRT-Tech-ANALIST-Pro-Native-CSharp-Exe
           path: |
+            JRT-Tect-Studio-Pro/src/JRT.Tect.Desktop/bin/Release/net6.0-windows/win-x64/publish/JRT_Tech_ANALIST_Pro_Native.exe
             kline_diagnose_ref/bin/Release/KLine_Diagnose_Motorcycle.exe
-            JRT-Tect-Studio-Pro/src/JRT.Tect.Desktop/bin/Release/net6.0-windows/win-x64/publish/JRT.Tect.Desktop.exe
             kline_diagnose_ref/bin/Release/*.dll
+
 
