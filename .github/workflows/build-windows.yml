@@ -28,8 +28,11 @@ jobs:
 
 
       - name: Run Windows Build Script
+        env:
+          PYTHONIOENCODING: utf-8
         run: |
           python build_windows.py
+
 
       - name: Install Inno Setup
         run: |

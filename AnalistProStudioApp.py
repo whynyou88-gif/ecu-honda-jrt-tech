@@ -315,7 +315,8 @@ def main():
 
         print(f"[App] Launching JRT Tech ANALIST Pro 3.4 Native Window ({app_url})...")
         window = webview.create_window(
-            title="JRT Tech ANALIST Pro 3.4 — Honda ECU Remap Studio",
+            title="JRT Tech ANALIST Pro 3.4 - Honda ECU Remap Studio",
+
             url=app_url,
             width=1280,
             height=820,
