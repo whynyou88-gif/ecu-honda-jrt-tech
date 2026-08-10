@@ -29,45 +29,47 @@
 
                 <!-- SIDEBAR MENU ITEMS -->
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel Padding="10,15">
-                        <!-- MAIN CATEGORY -->
-                        <TextBlock Text="MAIN" Foreground="#66666E" FontWeight="Bold" FontSize="10" Margin="10,0,0,6"/>
-                        <RadioButton x:Name="NavDashboard" Content="🏠  Dashboard" IsChecked="True" Style="{StaticResource {x:Type ToggleButton}}" Background="#FF4500" Foreground="White" FontWeight="Bold" Padding="10,8" Margin="0,0,0,4" CornerRadius="6"/>
-                        <Button x:Name="NavLivePerformance" Content="🏁  LIVE PERFORMANCE" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,15" BorderThickness="0"/>
+                    <Border Padding="10,15">
+                        <StackPanel>
+                            <!-- MAIN CATEGORY -->
+                            <TextBlock Text="MAIN" Foreground="#66666E" FontWeight="Bold" FontSize="10" Margin="10,0,0,6"/>
+                            <RadioButton x:Name="NavDashboard" Content="🏠  Dashboard" IsChecked="True" Background="#FF4500" Foreground="White" FontWeight="Bold" Padding="10,8" Margin="0,0,0,4"/>
+                            <Button x:Name="NavLivePerformance" Content="🏁  LIVE PERFORMANCE" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,15" BorderThickness="0"/>
 
-                        <!-- DIAGNOSTICS CATEGORY -->
-                        <TextBlock Text="DIAGNOSTICS" Foreground="#66666E" FontWeight="Bold" FontSize="10" Margin="10,0,0,6"/>
-                        <Button x:Name="NavLiveData" Content="📈  Live Data" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,4" BorderThickness="0"/>
-                        <DockPanel Margin="0,0,0,15">
-                            <Border DockPanel.Dock="Right" Background="#FF4500" CornerRadius="10" Padding="6,1" Margin="0,0,10,0">
-                                <TextBlock Text="0" Foreground="White" FontWeight="Bold" FontSize="10"/>
-                            </Border>
-                            <Button x:Name="NavDiagnostic" Content="⚠️  Diagnostic" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" BorderThickness="0"/>
-                        </DockPanel>
+                            <!-- DIAGNOSTICS CATEGORY -->
+                            <TextBlock Text="DIAGNOSTICS" Foreground="#66666E" FontWeight="Bold" FontSize="10" Margin="10,0,0,6"/>
+                            <Button x:Name="NavLiveData" Content="📈  Live Data" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,4" BorderThickness="0"/>
+                            <DockPanel Margin="0,0,0,15">
+                                <Border DockPanel.Dock="Right" Background="#FF4500" CornerRadius="10" Padding="6,1" Margin="0,0,10,0">
+                                    <TextBlock Text="0" Foreground="White" FontWeight="Bold" FontSize="10"/>
+                                </Border>
+                                <Button x:Name="NavDiagnostic" Content="⚠️  Diagnostic" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" BorderThickness="0"/>
+                            </DockPanel>
 
-                        <!-- TUNING CATEGORY -->
-                        <TextBlock Text="TUNING" Foreground="#66666E" FontWeight="Bold" FontSize="10" Margin="10,0,0,6"/>
-                        <Button x:Name="NavMapEditor" Content="📊  Map Editor" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,4" BorderThickness="0"/>
-                        <Button x:Name="NavDynoTest" Content="⚡  Dyno Test" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,4" BorderThickness="0"/>
-                        <Button x:Name="NavFlashEcu" Content="⚙️  Flash ECU" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,15" BorderThickness="0"/>
+                            <!-- TUNING CATEGORY -->
+                            <TextBlock Text="TUNING" Foreground="#66666E" FontWeight="Bold" FontSize="10" Margin="10,0,0,6"/>
+                            <Button x:Name="NavMapEditor" Content="📊  Map Editor" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,4" BorderThickness="0"/>
+                            <Button x:Name="NavDynoTest" Content="⚡  Dyno Test" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,4" BorderThickness="0"/>
+                            <Button x:Name="NavFlashEcu" Content="⚙️  Flash ECU" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,15" BorderThickness="0"/>
 
-                        <!-- STORAGE & DB CATEGORY -->
-                        <TextBlock Text="STORAGE &amp; DB" Foreground="#66666E" FontWeight="Bold" FontSize="10" Margin="10,0,0,6"/>
-                        <Button x:Name="NavDatabaseEcu" Content="🗄️  Database ECU" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,4" BorderThickness="0"/>
-                        <Button x:Name="NavBackup" Content="💾  Backup" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,4" BorderThickness="0"/>
-                        <Button x:Name="NavRestore" Content="🔄  Restore" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,4" BorderThickness="0"/>
-                        <Button x:Name="NavFileManager" Content="📁  File Manager" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,15" BorderThickness="0"/>
+                            <!-- STORAGE & DB CATEGORY -->
+                            <TextBlock Text="STORAGE &amp; DB" Foreground="#66666E" FontWeight="Bold" FontSize="10" Margin="10,0,0,6"/>
+                            <Button x:Name="NavDatabaseEcu" Content="🗄️  Database ECU" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,4" BorderThickness="0"/>
+                            <Button x:Name="NavBackup" Content="💾  Backup" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,4" BorderThickness="0"/>
+                            <Button x:Name="NavRestore" Content="🔄  Restore" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,4" BorderThickness="0"/>
+                            <Button x:Name="NavFileManager" Content="📁  File Manager" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,15" BorderThickness="0"/>
 
-                        <!-- TOOLS CATEGORY -->
-                        <TextBlock Text="TOOLS" Foreground="#66666E" FontWeight="Bold" FontSize="10" Margin="10,0,0,6"/>
-                        <Button x:Name="NavTerminal" Content="📟  Terminal" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,4" BorderThickness="0"/>
-                        <Button x:Name="NavLogs" Content="📑  Logs" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,15" BorderThickness="0"/>
+                            <!-- TOOLS CATEGORY -->
+                            <TextBlock Text="TOOLS" Foreground="#66666E" FontWeight="Bold" FontSize="10" Margin="10,0,0,6"/>
+                            <Button x:Name="NavTerminal" Content="📟  Terminal" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,4" BorderThickness="0"/>
+                            <Button x:Name="NavLogs" Content="📑  Logs" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,15" BorderThickness="0"/>
 
-                        <!-- SYSTEM CATEGORY -->
-                        <TextBlock Text="SYSTEM" Foreground="#66666E" FontWeight="Bold" FontSize="10" Margin="10,0,0,6"/>
-                        <Button x:Name="NavSettings" Content="⚙️  Settings" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,4" BorderThickness="0"/>
-                        <Button x:Name="NavAbout" Content="ℹ️  About" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" BorderThickness="0"/>
-                    </StackPanel>
+                            <!-- SYSTEM CATEGORY -->
+                            <TextBlock Text="SYSTEM" Foreground="#66666E" FontWeight="Bold" FontSize="10" Margin="10,0,0,6"/>
+                            <Button x:Name="NavSettings" Content="⚙️  Settings" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" Margin="0,0,0,4" BorderThickness="0"/>
+                            <Button x:Name="NavAbout" Content="ℹ️  About" Background="Transparent" Foreground="#AAAAAA" HorizontalContentAlignment="Left" Padding="10,8" BorderThickness="0"/>
+                        </StackPanel>
+                    </Border>
                 </ScrollViewer>
             </DockPanel>
         </Border>
@@ -90,13 +92,14 @@
                             <ComboBoxItem Content="COM3 - USB Serial Port"/>
                         </ComboBox>
 
-                        <Button Content="🔌 Connect ECU" Background="#FF4500" Foreground="White" FontWeight="Bold" Padding="14,6" Margin="0,0,12,0" CornerRadius="6"/>
-                        <Button Content="⏻" Background="#1E1E24" Foreground="White" Width="32" Height="32" Margin="0,0,6,0" CornerRadius="6"/>
-                        <Button Content="⚙" Background="#1E1E24" Foreground="White" Width="32" Height="32" Margin="0,0,6,0" CornerRadius="6"/>
-                        <Button Content="📱" Background="#1E1E24" Foreground="White" Width="32" Height="32" CornerRadius="6"/>
+                        <Button Content="🔌 Connect ECU" Background="#FF4500" Foreground="White" FontWeight="Bold" Padding="14,6" Margin="0,0,12,0"/>
+                        <Button Content="⏻" Background="#1E1E24" Foreground="White" Width="32" Height="32" Margin="0,0,6,0"/>
+                        <Button Content="⚙" Background="#1E1E24" Foreground="White" Width="32" Height="32" Margin="0,0,6,0"/>
+                        <Button Content="📱" Background="#1E1E24" Foreground="White" Width="32" Height="32"/>
                     </StackPanel>
                 </DockPanel>
             </Border>
+
 
             <!-- MAIN DASHBOARD CONTENT VIEW -->
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="20">
@@ -239,8 +242,8 @@
                                 </StackPanel>
                                 <TextBlock Text="Animasi tachometer sweep &amp; LED shift light. BUKAN data ECU asli." Foreground="#888894" FontSize="11" Margin="0,0,0,10"/>
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Content="▶ Test Racing Demo" Background="#FF4500" Foreground="White" FontWeight="Bold" Padding="10,6" Margin="0,0,8,0" CornerRadius="4"/>
-                                    <Button Content="🕹 Sim Mode" Background="#262630" Foreground="White" FontWeight="Bold" Padding="10,6" CornerRadius="4"/>
+                                    <Button Content="▶ Test Racing Demo" Background="#FF4500" Foreground="White" FontWeight="Bold" Padding="10,6" Margin="0,0,8,0"/>
+                                    <Button Content="🕹 Sim Mode" Background="#262630" Foreground="White" FontWeight="Bold" Padding="10,6"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
