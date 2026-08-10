@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JRT.Tect.Core\JRT.Tect.Core.csproj" />
+    <ProjectReference Include="..\JRT.Tect.Hardware\JRT.Tect.Hardware.csproj" />
+    <ProjectReference Include="..\JRT.Tect.Protocols\JRT.Tect.Protocols.csproj" />
+  </ItemGroup>
+</Project>

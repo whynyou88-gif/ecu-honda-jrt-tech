@@ -59,12 +59,21 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.0.x'
+
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      - name: Build C# Native Application (.exe)
+      - name: Build C# WinForms Application (.exe)
         run: |
           msbuild kline_diagnose_ref/KLine_Diagnose_Motorcycle.csproj -p:Configuration=Release -p:Platform="AnyCPU"
+
+      - name: Build C# WPF ANALIST Pro Application (.exe)
+        run: |
+          dotnet publish JRT-Tect-Studio-Pro/src/JRT.Tect.Desktop/JRT.Tect.Desktop.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true
 
       - name: Upload Native C# Executable Artifact
         uses: actions/upload-artifact@v4
@@ -72,4 +81,6 @@ jobs:
           name: JRT-Tech-ANALIST-Pro-Native-CSharp-Exe
           path: |
             kline_diagnose_ref/bin/Release/KLine_Diagnose_Motorcycle.exe
+            JRT-Tect-Studio-Pro/src/JRT.Tect.Desktop/bin/Release/net6.0-windows/win-x64/publish/JRT.Tect.Desktop.exe
             kline_diagnose_ref/bin/Release/*.dll
+
