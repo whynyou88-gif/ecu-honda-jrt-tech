@@ -344,7 +344,8 @@ def build():
         ) / (1024 * 1024)
 
         print(f"\n{'='*60}")
-        print(f"  ✅ BUILD SUCCESSFUL!")
+        print(f"  [SUCCESS] BUILD SUCCESSFUL!")
+
         print(f"  EXE: {exe_file}")
         print(f"  EXE Size: {size_mb:.1f} MB")
         print(f"  Total Folder: {total_size:.1f} MB")
