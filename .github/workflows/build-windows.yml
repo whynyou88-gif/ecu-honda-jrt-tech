@@ -25,14 +25,11 @@ jobs:
         run: |
           pip install pyinstaller pywebview pythonnet pywin32 bottle aiohttp pyserial multidict yarl frozenlist aiosignal
 
-
-
       - name: Run Windows Build Script
         env:
           PYTHONIOENCODING: utf-8
         run: |
           python build_windows.py
-
 
       - name: Install Inno Setup
         run: |
@@ -41,7 +38,6 @@ jobs:
       - name: Compile Installer (.exe)
         run: |
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
-
 
       - name: Upload Standalone App Artifact
         uses: actions/upload-artifact@v4
@@ -54,3 +50,26 @@ jobs:
         with:
           name: JRT_Tech_ANALIST_Pro_v3.4_Setup.exe
           path: Output/JRT_Tech_ANALIST_Pro_v3.4_Setup.exe
+
+  build-csharp:
+    name: Build Native C# Windows Executable (~3MB)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build C# Native Application (.exe)
+        run: |
+          msbuild kline_diagnose_ref/KLine_Diagnose_Motorcycle.csproj -p:Configuration=Release -p:Platform="AnyCPU"
+
+      - name: Upload Native C# Executable Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: JRT-Tech-ANALIST-Pro-Native-CSharp-Exe
+          path: |
+            kline_diagnose_ref/bin/Release/KLine_Diagnose_Motorcycle.exe
+            kline_diagnose_ref/bin/Release/*.dll
