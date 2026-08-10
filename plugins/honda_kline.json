@@ -1,0 +1,18 @@
+{
+  "name": "Honda PGM-FI K-Line Plugin",
+  "brand": "HONDA",
+  "model": "PGM-FI",
+  "baudrate": 10400,
+  "checksum_type": "crc8_honda",
+  "init_command": [114, 2, 0, 240],
+  "realtime_command": [114, 4, 113, 23],
+  "expected_payload_length": 14,
+  "sensor_mapping": {
+    "tps": { "offset": 2, "length": 1, "scale": 0.392, "subtract": 0.0 },
+    "map": { "offset": 3, "length": 1, "scale": 1.0, "subtract": 0.0 },
+    "ect": { "offset": 4, "length": 1, "scale": 0.8, "subtract": 40.0 },
+    "iat": { "offset": 5, "length": 1, "scale": 0.8, "subtract": 40.0 },
+    "rpm": { "offset": 6, "length": 2, "scale": 1.0, "subtract": 0.0 },
+    "vbat": { "offset": 0, "length": 1, "scale": 0.1, "subtract": 0.0 }
+  }
+}

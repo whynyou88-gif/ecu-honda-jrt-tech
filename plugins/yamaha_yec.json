@@ -1,0 +1,18 @@
+{
+  "name": "Yamaha YEC Plugin",
+  "brand": "YAMAHA",
+  "model": "YEC",
+  "baudrate": 10400,
+  "checksum_type": "checksum8bit",
+  "init_command": [240, 2, 16, 0],
+  "realtime_command": [240, 2, 33, 0],
+  "expected_payload_length": 16,
+  "sensor_mapping": {
+    "rpm": { "offset": 2, "length": 2, "scale": 1.0, "subtract": 0.0 },
+    "tps": { "offset": 4, "length": 1, "scale": 0.392, "subtract": 0.0 },
+    "map": { "offset": 5, "length": 1, "scale": 1.0, "subtract": 0.0 },
+    "ect": { "offset": 6, "length": 1, "scale": 1.0, "subtract": 40.0 },
+    "vbat": { "offset": 7, "length": 1, "scale": 0.1, "subtract": 0.0 },
+    "speed": { "offset": 8, "length": 1, "scale": 1.0, "subtract": 0.0 }
+  }
+}

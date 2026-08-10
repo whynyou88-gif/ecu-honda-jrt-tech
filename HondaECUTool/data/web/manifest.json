@@ -1,0 +1,36 @@
+{
+  "short_name": "JRT Tect",
+  "name": "JRT Tect — Honda ECU K-Line Diagnostic",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/mobile.html",
+  "scope": "/",
+  "background_color": "#ffffff",
+  "theme_color": "#FF6D00",
+  "display": "standalone",
+  "orientation": "portrait",
+  "categories": ["utilities", "automotive"],
+  "description": "JRT Tect — Honda ECU K-Line Diagnostic & Remapping Tool by Ferdy Valentino",
+  "shortcuts": [
+    {
+      "name": "Live Data",
+      "url": "/mobile.html#live",
+      "description": "View real-time ECU parameters"
+    },
+    {
+      "name": "Read DTC",
+      "url": "/mobile.html#diagnostic",
+      "description": "Scan for fault codes"
+    }
+  ]
+}

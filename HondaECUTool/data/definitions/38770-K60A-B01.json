@@ -1,0 +1,90 @@
+{
+  "$schema": "jrt_ecu_definition_v1.0",
+  "metadata": {
+    "ecuId": "38770-K60A-B01",
+    "modelName": "Honda Vario 125 eSP All New (K60A)",
+    "mcuArch": "Renesas V850 / RH850",
+    "fileSize": 393216,
+    "firmwareId": "SV850T06C121RV101",
+    "version": "1.0.0",
+    "author": "JRT Tech Studio Pro",
+    "checksum": {
+      "type": "CRC32",
+      "range": { "start": "0x000000", "end": "0x02FFFF" },
+      "targetOffset": "0x07FFF8"
+    }
+  },
+  "tables": [
+    {
+      "id": "main_fuel_map",
+      "name": "Main Fuel Map (VE Table)",
+      "category": "Fuel / Injection",
+      "address": "0x0190EE",
+      "dataType": "uint16",
+      "endianness": "big",
+      "rows": 16,
+      "cols": 16,
+      "rowAxis": {
+        "label": "RPM",
+        "unit": "RPM",
+        "values": [1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000]
+      },
+      "colAxis": {
+        "label": "TPS",
+        "unit": "%",
+        "values": [0.0, 1.2, 2.5, 4.0, 6.0, 9.0, 13.0, 18.0, 25.0, 33.0, 42.0, 52.0, 63.0, 75.0, 88.0, 100.0]
+      },
+      "scaling": {
+        "formula": "raw / 100.0",
+        "inverseFormula": "raw * 100.0",
+        "unit": "ms",
+        "precision": 2,
+        "minLimit": 0.5,
+        "maxLimit": 10.0
+      },
+      "confidence": "MEDIUM-HIGH (85%)",
+      "verified": false,
+      "notes": "Wilayah matriks kalibrasi bahan bakar hasil differential analysis. Memerlukan konfirmasi dimensi row/col via disassembly."
+    }
+  ],
+  "scalars": [
+    {
+      "id": "rev_limiter_soft",
+      "name": "Rev Limiter (Soft Cut)",
+      "category": "Limiters",
+      "address": "0x018E14",
+      "dataType": "uint16",
+      "endianness": "big",
+      "scaling": {
+        "formula": "raw",
+        "inverseFormula": "raw",
+        "unit": "RPM",
+        "precision": 0,
+        "minLimit": 4000,
+        "maxLimit": 16000
+      },
+      "confidence": "HIGH (98%)",
+      "verified": true,
+      "notes": "Nilai pembatas RPM Soft Cut (9,850 RPM Stok / 11,000 RPM Mod)."
+    },
+    {
+      "id": "rev_limiter_hard",
+      "name": "Rev Limiter (Hard Cut)",
+      "category": "Limiters",
+      "address": "0x018ED6",
+      "dataType": "uint16",
+      "endianness": "big",
+      "scaling": {
+        "formula": "raw",
+        "inverseFormula": "raw",
+        "unit": "RPM",
+        "precision": 0,
+        "minLimit": 4000,
+        "maxLimit": 16000
+      },
+      "confidence": "HIGH (95%)",
+      "verified": true,
+      "notes": "Nilai pembatas RPM Hard Cut (9,650 RPM Stok / 10,900 RPM Mod)."
+    }
+  ]
+}

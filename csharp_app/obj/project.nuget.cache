@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "dgSpecHash": "g9CUBEBGNS8=",
+  "success": true,
+  "projectFilePath": "/Users/ferdyvalentino/Downloads/remap-ecu-honda-main/csharp_app/JRT_Tech_Diagnose_CS.csproj",
+  "expectedPackageFiles": [
+    "/Users/ferdyvalentino/.nuget/packages/runtime.linux-arm.runtime.native.system.io.ports/8.0.0/runtime.linux-arm.runtime.native.system.io.ports.8.0.0.nupkg.sha512",
+    "/Users/ferdyvalentino/.nuget/packages/runtime.linux-arm64.runtime.native.system.io.ports/8.0.0/runtime.linux-arm64.runtime.native.system.io.ports.8.0.0.nupkg.sha512",
+    "/Users/ferdyvalentino/.nuget/packages/runtime.linux-x64.runtime.native.system.io.ports/8.0.0/runtime.linux-x64.runtime.native.system.io.ports.8.0.0.nupkg.sha512",
+    "/Users/ferdyvalentino/.nuget/packages/runtime.native.system.io.ports/8.0.0/runtime.native.system.io.ports.8.0.0.nupkg.sha512",
+    "/Users/ferdyvalentino/.nuget/packages/runtime.osx-arm64.runtime.native.system.io.ports/8.0.0/runtime.osx-arm64.runtime.native.system.io.ports.8.0.0.nupkg.sha512",
+    "/Users/ferdyvalentino/.nuget/packages/runtime.osx-x64.runtime.native.system.io.ports/8.0.0/runtime.osx-x64.runtime.native.system.io.ports.8.0.0.nupkg.sha512",
+    "/Users/ferdyvalentino/.nuget/packages/system.io.ports/8.0.0/system.io.ports.8.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,281 @@
+<Window x:Class="JRT.Tect.Desktop.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="JRT Tect ANALIST Pro 3.4 — Honda ECU Remap Studio" Height="780" Width="1280"
+        Background="#121212" Foreground="#FFFFFF"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Top Orange Banner -->
+            <RowDefinition Height="*"/>    <!-- 3-Column Analist Layout -->
+            <RowDefinition Height="Auto"/> <!-- Bottom Statusbar -->
+        </Grid.RowDefinitions>
+
+        <!-- TOP ORANGE BANNER -->
+        <Border Grid.Row="0" Background="#1E1E1E" Padding="10" BorderBrush="#FF6D00" BorderThickness="0,0,0,2">
+            <DockPanel>
+                <!-- Model Selector Dropdown -->
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" VerticalAlignment="Center">
+                    <ComboBox Width="300" Height="28" Background="#FF6D00" Foreground="White" FontWeight="Bold" SelectedIndex="0" Margin="0,0,20,0">
+                        <ComboBoxItem Content="22 VARIO 125 OLD KZRA-601 (2013-2015)"/>
+                        <ComboBoxItem Content="23 VARIO 150 NEW K59J-A01"/>
+                        <ComboBoxItem Content="18 BEAT FI K25-901"/>
+                        <ComboBoxItem Content="15 CB150R K15-901"/>
+                    </ComboBox>
+
+                    <TextBlock Text="EDIT VALUE:" Foreground="#FF6D00" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBox Width="60" Text="0.00" Background="#2A2A2A" Foreground="White" TextAlignment="Center" FontWeight="Bold" Padding="3" Margin="0,0,5,0"/>
+                    <Button Content="-" Width="24" Height="24" Background="#FF6D00" Foreground="White" FontWeight="Bold" Margin="0,0,3,0"/>
+                    <Button Content="+" Width="24" Height="24" Background="#FF6D00" Foreground="White" FontWeight="Bold" Margin="0,0,15,0"/>
+
+                    <TextBlock Text="1. Breakpoint:" Foreground="#FF6D00" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBox Width="45" Text="1.00" Background="#2A2A2A" Foreground="White" TextAlignment="Center" FontWeight="Bold" Padding="3"/>
+                </StackPanel>
+
+                <!-- Branding Badge -->
+                <Border DockPanel.Dock="Right" CornerRadius="4" Padding="12,4" HorizontalAlignment="Right">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="#FF6D00" Offset="0.0"/>
+                            <GradientStop Color="#CC0000" Offset="1.0"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <TextBlock Text="🏍 JRT TECT ANALIST Pro 3.4" FontWeight="ExtraBold" FontSize="14" Foreground="White"/>
+                </Border>
+            </DockPanel>
+        </Border>
+
+        <!-- 3-COLUMN ANALIST MAIN LAYOUT -->
+        <Grid Grid.Row="1" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/> <!-- Left Control Buttons Panel -->
+                <ColumnDefinition Width="*"/>   <!-- Center 2D Map Grid & 3D Surface View -->
+                <ColumnDefinition Width="240"/> <!-- Right Gauges & Sensor Meters -->
+            </Grid.ColumnDefinitions>
+
+            <!-- LEFT CONTROL PANEL (ORANGE BUTTONS) -->
+            <Border Grid.Column="0" Background="#1A1A1A" BorderBrush="#333" BorderThickness="1" CornerRadius="6" Padding="10" Margin="0,0,10,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="DATA BASE MAP" Foreground="#FF6D00" FontWeight="ExtraBold" FontSize="11" Margin="0,0,0,6"/>
+                        <ComboBox SelectedIndex="0" Background="#FF6D00" Foreground="White" FontWeight="Bold" Margin="0,0,0,10">
+                            <ComboBoxItem Content="22 VARIO 125 KZRA-601"/>
+                            <ComboBoxItem Content="Fuel Map 1 (Injection)"/>
+                            <ComboBoxItem Content="Ignition Map 1 (Timing)"/>
+                        </ComboBox>
+
+                        <Button Content="Connect ECM" Background="#FF6D00" Foreground="White" FontWeight="Bold" Padding="7" Margin="0,0,0,5"/>
+                        <Button Content="DIAG" Background="#FF6D00" Foreground="White" FontWeight="Bold" Padding="7" Margin="0,0,0,5"/>
+                        <Button Content="FLASH" Background="#FF6D00" Foreground="White" FontWeight="Bold" Padding="7" Margin="0,0,0,5"/>
+                        <Button Content="LIVE" Background="#FF6D00" Foreground="White" FontWeight="Bold" Padding="7" Margin="0,0,0,5"/>
+                        <Button Content="Auto Live Map Data" Background="#FF6D00" Foreground="White" FontWeight="Bold" Padding="7" Margin="0,0,0,5"/>
+                        
+                        <Button Content="❖ Graph 3D" Foreground="White" FontWeight="ExtraBold" Padding="8" Margin="0,0,0,5">
+                            <Button.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#FF6D00" Offset="0"/>
+                                    <GradientStop Color="#CC0000" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Button.Background>
+                        </Button>
+
+                        <Button Content="OPEN File" Background="#FF6D00" Foreground="White" FontWeight="Bold" Padding="7" Margin="0,0,0,5"/>
+                        <Button Content="SAVE" Background="#FF6D00" Foreground="White" FontWeight="Bold" Padding="7" Margin="0,0,0,5"/>
+                        <Button Content="SAVE As FILE" Background="#FF6D00" Foreground="White" FontWeight="Bold" Padding="7" Margin="0,0,0,10"/>
+
+                        <!-- Volume Silinder CC Calculator -->
+                        <Border Background="#252525" BorderBrush="#444" BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,0,0,10">
+                            <StackPanel>
+                                <TextBlock Text="Volume Silinder ( CC )" Foreground="#FF6D00" FontWeight="Bold" FontSize="10" Margin="0,0,0,5"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="BORE" Foreground="#AAA" FontSize="9" VerticalAlignment="Center"/>
+                                    <TextBox Grid.Column="1" Text="52.4" Background="#111" Foreground="White" FontSize="9" Padding="2" Margin="2,0"/>
+                                    <TextBlock Grid.Column="2" Text="X" Foreground="#AAA" FontSize="9" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="3" Text="STROKE" Foreground="#AAA" FontSize="9" VerticalAlignment="Center" Margin="2,0,0,0"/>
+                                    <TextBox Grid.Column="4" Text="57.9" Background="#111" Foreground="White" FontSize="9" Padding="2" Margin="2,0"/>
+                                    <Button Grid.Column="5" Content="Ok" Background="#FF6D00" Foreground="White" FontSize="9" FontWeight="Bold" Padding="4,2"/>
+                                </Grid>
+                                <TextBlock Text="Displacement: 124.8 cc" Foreground="#22C55E" FontWeight="Bold" FontSize="10" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Content="⮌ Undo" Background="#333" Foreground="White" Margin="0,0,2,0" Padding="5"/>
+                            <Button Grid.Column="1" Content="⮎ Redo" Background="#333" Foreground="White" Margin="2,0,0,0" Padding="5"/>
+                        </Grid>
+
+                        <Button Content="Count Flash Reset" Background="#FF6D00" Foreground="White" FontWeight="Bold" Padding="7" Margin="0,0,0,10"/>
+
+                        <!-- Connection Status Box -->
+                        <Border Background="#111" BorderBrush="#FF6D00" BorderThickness="1" CornerRadius="4" Padding="8">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Ellipse Width="10" Height="10" Fill="#22C55E" Margin="0,0,6,0"/>
+                                <TextBlock Text="ECU Connected" Foreground="#FF6D00" FontWeight="Bold" FontSize="11"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!-- CENTER MAP EDITOR GRID & FLOATING 3D GRAPH VIEW -->
+            <Border Grid.Column="1" Background="#141414" BorderBrush="#333" BorderThickness="1" CornerRadius="6" Padding="10">
+                <Grid>
+                    <!-- 2D Heatmap Grid Display -->
+                    <DataGrid AutoGenerateColumns="True" Background="Transparent" RowHeaderWidth="40" GridLinesVisibility="All" HeadersVisibility="All"/>
+                    
+                    <!-- Floating Graph3D ANALIST PRO Window Mockup -->
+                    <Border Width="500" Height="360" Background="#1A1A1A" BorderBrush="#FF6D00" BorderThickness="2" CornerRadius="6" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <!-- Graph3D Header -->
+                            <Border Grid.Row="0" Background="#FF6D00" Padding="6,4">
+                                <DockPanel>
+                                    <TextBlock Text="❖ Graph3D ANALIST PRO" Foreground="White" FontWeight="ExtraBold" FontSize="12"/>
+                                    <Button Content="✕" DockPanel.Dock="Right" Background="Transparent" Foreground="White" BorderThickness="0" FontWeight="Bold"/>
+                                </DockPanel>
+                            </Border>
+
+                            <!-- Graph3D Body -->
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Left 3D Controls -->
+                                <StackPanel Grid.Column="0" Background="#222" Padding="8">
+                                    <TextBlock Text="Data Source:" Foreground="#AAA" FontSize="10"/>
+                                    <ComboBox SelectedIndex="0" Margin="0,2,0,6"><ComboBoxItem Content="Graph"/></ComboBox>
+
+                                    <TextBlock Text="Color Scheme:" Foreground="#AAA" FontSize="10"/>
+                                    <ComboBox SelectedIndex="0" Margin="0,2,0,6"><ComboBoxItem Content="Rainbow1"/></ComboBox>
+
+                                    <TextBlock Text="Points: 725" Foreground="#FF6D00" FontWeight="Bold" FontSize="11" Margin="0,0,0,6"/>
+
+                                    <Button Content="Reset Position" Background="#FF6D00" Foreground="White" FontSize="10" FontWeight="Bold" Margin="0,0,0,4" Padding="3"/>
+                                    <Button Content="Save Screenshot" Background="#FF6D00" Foreground="White" FontSize="10" FontWeight="Bold" Margin="0,0,0,8" Padding="3"/>
+
+                                    <TextBlock Text="Zoom" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
+                                    <Slider Minimum="0.5" Maximum="2.5" Value="1"/>
+
+                                    <TextBlock Text="Elevation (UP)" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
+                                    <Slider Minimum="0" Maximum="90" Value="45"/>
+
+                                    <TextBlock Text="Rotation (L-R)" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
+                                    <Slider Minimum="0" Maximum="360" Value="45"/>
+                                </StackPanel>
+
+                                <!-- Right 3D Surface Viewport Placeholder -->
+                                <Border Grid.Column="1" Background="#0D0D0D" Margin="5">
+                                    <TextBlock Text="[3D Surface Mesh Graph Output]" Foreground="#FF6D00" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                                </Border>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- RIGHT GAUGES & LIVE PARAMETER METERS -->
+            <Border Grid.Column="2" Background="#1A1A1A" BorderBrush="#333" BorderThickness="1" CornerRadius="6" Padding="10" Margin="10,0,0,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <!-- RPM Circular Gauge Meter -->
+                        <Border Background="#111" BorderBrush="#333" BorderThickness="1" CornerRadius="6" Padding="10" Margin="0,0,0,10">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="RPM (x1000)" Foreground="#FF6D00" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                <Ellipse Width="120" Height="120" Stroke="#FF6D00" StrokeThickness="6"/>
+                                <TextBlock Text="1,850" Foreground="White" FontWeight="ExtraBold" FontSize="18" HorizontalAlignment="Center" Margin="0,-70,0,50"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- TPS Circular Gauge Meter -->
+                        <Border Background="#111" BorderBrush="#333" BorderThickness="1" CornerRadius="6" Padding="10" Margin="0,0,0,10">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="TPS %" Foreground="#00E5FF" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                <Ellipse Width="120" Height="120" Stroke="#00E5FF" StrokeThickness="6"/>
+                                <TextBlock Text="1.9 %" Foreground="White" FontWeight="ExtraBold" FontSize="18" HorizontalAlignment="Center" Margin="0,-70,0,50"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Live Parameter Metric Grid -->
+                        <UniformGrid Columns="2">
+                            <Border Background="#222" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="6" Margin="2">
+                                <StackPanel TextElement.Alignment="Center">
+                                    <TextBlock Text="Tps" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
+                                    <TextBlock Text="1.9 %" Foreground="White" FontSize="14" FontWeight="Bold"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#222" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="6" Margin="2">
+                                <StackPanel TextElement.Alignment="Center">
+                                    <TextBlock Text="Rpm" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
+                                    <TextBlock Text="1850" Foreground="White" FontSize="14" FontWeight="Bold"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#222" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="6" Margin="2">
+                                <StackPanel TextElement.Alignment="Center">
+                                    <TextBlock Text="IG" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
+                                    <TextBlock Text="10.6 °" Foreground="White" FontSize="14" FontWeight="Bold"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#222" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="6" Margin="2">
+                                <StackPanel TextElement.Alignment="Center">
+                                    <TextBlock Text="Temp" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
+                                    <TextBlock Text="87.3 °C" Foreground="White" FontSize="14" FontWeight="Bold"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#222" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="6" Margin="2">
+                                <StackPanel TextElement.Alignment="Center">
+                                    <TextBlock Text="Inj" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
+                                    <TextBlock Text="2.12 ms" Foreground="White" FontSize="14" FontWeight="Bold"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#222" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="6" Margin="2">
+                                <StackPanel TextElement.Alignment="Center">
+                                    <TextBlock Text="Idc" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
+                                    <TextBlock Text="4.2 %" Foreground="White" FontSize="14" FontWeight="Bold"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#222" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="6" Margin="2">
+                                <StackPanel TextElement.Alignment="Center">
+                                    <TextBlock Text="HP" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
+                                    <TextBlock Text="11.8 HP" Foreground="White" FontSize="14" FontWeight="Bold"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#222" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="6" Margin="2">
+                                <StackPanel TextElement.Alignment="Center">
+                                    <TextBlock Text="AFR" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
+                                    <TextBlock Text="14.7" Foreground="White" FontSize="14" FontWeight="Bold"/>
+                                </StackPanel>
+                            </Border>
+                        </UniformGrid>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+
+        <!-- BOTTOM STATUS BAR -->
+        <Border Grid.Row="2" Background="#181818" Padding="10,5" BorderBrush="#333" BorderThickness="0,1,0,0">
+            <DockPanel>
+                <TextBlock Text="ECU Connected | Port: COM3 (10400 bps) | Part No: 37820-KZRA-601" Foreground="#888" FontSize="11" DockPanel.Dock="Left"/>
+                <TextBlock Text="JRT Tect Studio v3.4" Foreground="#FF6D00" FontWeight="Bold" FontSize="11" DockPanel.Dock="Right"/>
+            </DockPanel>
+        </Border>
+    </Grid>
+</Window>

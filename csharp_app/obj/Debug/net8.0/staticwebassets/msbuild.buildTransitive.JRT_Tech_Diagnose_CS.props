@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../buildMultiTargeting/JRT_Tech_Diagnose_CS.props" />
+</Project>

@@ -1,0 +1,52 @@
+name: Build Windows Application Installer
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    name: Build Windows Executable & Installer
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          pip install pyinstaller pywebview pythonnet pywin32 bottle aiohttp pyserial multidict yarl frozenlist aiosignal
+
+
+
+      - name: Run Windows Build Script
+        run: |
+          python build_windows.py
+
+      - name: Install Inno Setup
+        run: |
+          choco install innosetup -y
+
+      - name: Compile Installer (.exe)
+        run: |
+          "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
+
+      - name: Upload Standalone App Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: JRT-Tech-ANALIST-Pro-Windows-Folder
+          path: dist/JRT Tech ANALIST Pro
+
+      - name: Upload Installer Executable Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: JRT_Tech_ANALIST_Pro_v3.4_Setup.exe
+          path: Output/JRT_Tech_ANALIST_Pro_v3.4_Setup.exe

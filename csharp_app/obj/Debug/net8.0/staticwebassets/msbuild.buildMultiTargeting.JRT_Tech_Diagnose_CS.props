@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../build/JRT_Tech_Diagnose_CS.props" />
+</Project>

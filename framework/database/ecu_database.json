@@ -1,0 +1,57 @@
+{
+  "version": "1.0.0",
+  "database_updated": "2026-07-22",
+  "ecus": [
+    {
+      "ecu_id": "K60A-B01",
+      "model": "Vario 125 eSP (LED)",
+      "year": 2018,
+      "vendor": "Keihin",
+      "mcu_arch": "Renesas V850",
+      "file_size": 393216,
+      "protocol": "Honda K-Line KWP2000",
+      "supports_live_data": true,
+      "supports_dtc": true,
+      "supports_clear_dtc": true,
+      "supports_flash_read": true,
+      "supports_flash_write": true,
+      "supports_static_key": false,
+      "supports_seed_key": true,
+      "notes": "Keihin V850 384KB ECU. Flash write requires verified Seed-Key algorithm registered in seed_key_provider.py."
+    },
+    {
+      "ecu_id": "K25-901",
+      "model": "BeAT FI / Scoopy FI",
+      "year": 2014,
+      "vendor": "Keihin",
+      "mcu_arch": "Renesas V850",
+      "file_size": 393216,
+      "protocol": "Honda K-Line KWP2000",
+      "supports_live_data": true,
+      "supports_dtc": true,
+      "supports_clear_dtc": true,
+      "supports_flash_read": true,
+      "supports_flash_write": true,
+      "supports_static_key": false,
+      "supports_seed_key": true,
+      "notes": "Keihin 384KB PGM-FI ECU."
+    },
+    {
+      "ecu_id": "KZRA-000",
+      "model": "Vario 125 FI (Old)",
+      "year": 2012,
+      "vendor": "Keihin",
+      "mcu_arch": "Renesas V850",
+      "file_size": 393216,
+      "protocol": "Honda K-Line KWP2000",
+      "supports_live_data": true,
+      "supports_dtc": true,
+      "supports_clear_dtc": true,
+      "supports_flash_read": true,
+      "supports_flash_write": true,
+      "supports_static_key": true,
+      "supports_seed_key": true,
+      "notes": "Legacy Keihin 384KB ECU test bench."
+    }
+  ]
+}
