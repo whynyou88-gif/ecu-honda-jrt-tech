@@ -599,9 +599,9 @@ namespace KLine_Diagnose_Motorcycle
         {
             if (FormMain.ftHandle != IntPtr.Zero)
             {
-                FTDI.FT_Close(FormMain.ftHandle);
                 FormMain.ftHandle = IntPtr.Zero;
             }
         }
+
     }
 }
