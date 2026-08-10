@@ -1,0 +1,31 @@
+name: Build Native C# Windows Executable
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-csharp:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Source Code
+      uses: actions/checkout@v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Build C# Native Application (.exe)
+      run: |
+        msbuild kline_diagnose_ref/KLine_Diagnose_Motorcycle.csproj -p:Configuration=Release -p:Platform="AnyCPU"
+
+    - name: Upload Native C# Executable Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: JRT-Tech-ANALIST-Pro-Native-CSharp-Exe
+        path: |
+          kline_diagnose_ref/bin/Release/KLine_Diagnose_Motorcycle.exe
+          kline_diagnose_ref/bin/Release/*.dll

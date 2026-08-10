@@ -1,6 +1,6 @@
-﻿using FTD2XX_NET;
 using KLine_Diagnose_Motorcycle;
 using System;
+
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO.Ports;
