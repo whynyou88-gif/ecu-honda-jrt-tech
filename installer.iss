@@ -1,7 +1,8 @@
-# ============================================================
-# Inno Setup Script for JRT Tech ANALIST Pro 3.4
-# Creates a Windows Standalone Setup Installer (.exe)
-# ============================================================
+; ============================================================
+; Inno Setup Script for JRT Tech ANALIST Pro 3.4
+; Creates a Windows Standalone Setup Installer (.exe)
+; ============================================================
+
 
 [Setup]
 AppId={{C6B579E1-835A-4A73-A3B9-281C4F98E1A3}
