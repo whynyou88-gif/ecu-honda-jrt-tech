@@ -160,27 +160,29 @@
                                 </Grid.ColumnDefinitions>
 
                                 <!-- Left 3D Controls -->
-                                <StackPanel Grid.Column="0" Background="#222" Padding="8">
-                                    <TextBlock Text="Data Source:" Foreground="#AAA" FontSize="10"/>
-                                    <ComboBox SelectedIndex="0" Margin="0,2,0,6"><ComboBoxItem Content="Graph"/></ComboBox>
+                                <Border Grid.Column="0" Background="#222" Padding="8">
+                                    <StackPanel>
+                                        <TextBlock Text="Data Source:" Foreground="#AAA" FontSize="10"/>
+                                        <ComboBox SelectedIndex="0" Margin="0,2,0,6"><ComboBoxItem Content="Graph"/></ComboBox>
 
-                                    <TextBlock Text="Color Scheme:" Foreground="#AAA" FontSize="10"/>
-                                    <ComboBox SelectedIndex="0" Margin="0,2,0,6"><ComboBoxItem Content="Rainbow1"/></ComboBox>
+                                        <TextBlock Text="Color Scheme:" Foreground="#AAA" FontSize="10"/>
+                                        <ComboBox SelectedIndex="0" Margin="0,2,0,6"><ComboBoxItem Content="Rainbow1"/></ComboBox>
 
-                                    <TextBlock Text="Points: 725" Foreground="#FF6D00" FontWeight="Bold" FontSize="11" Margin="0,0,0,6"/>
+                                        <TextBlock Text="Points: 725" Foreground="#FF6D00" FontWeight="Bold" FontSize="11" Margin="0,0,0,6"/>
 
-                                    <Button Content="Reset Position" Background="#FF6D00" Foreground="White" FontSize="10" FontWeight="Bold" Margin="0,0,0,4" Padding="3"/>
-                                    <Button Content="Save Screenshot" Background="#FF6D00" Foreground="White" FontSize="10" FontWeight="Bold" Margin="0,0,0,8" Padding="3"/>
+                                        <Button Content="Reset Position" Background="#FF6D00" Foreground="White" FontSize="10" FontWeight="Bold" Margin="0,0,0,4" Padding="3"/>
+                                        <Button Content="Save Screenshot" Background="#FF6D00" Foreground="White" FontSize="10" FontWeight="Bold" Margin="0,0,0,8" Padding="3"/>
 
-                                    <TextBlock Text="Zoom" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
-                                    <Slider Minimum="0.5" Maximum="2.5" Value="1"/>
+                                        <TextBlock Text="Zoom" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
+                                        <Slider Minimum="0.5" Maximum="2.5" Value="1"/>
 
-                                    <TextBlock Text="Elevation (UP)" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
-                                    <Slider Minimum="0" Maximum="90" Value="45"/>
+                                        <TextBlock Text="Elevation (UP)" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
+                                        <Slider Minimum="0" Maximum="90" Value="45"/>
 
-                                    <TextBlock Text="Rotation (L-R)" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
-                                    <Slider Minimum="0" Maximum="360" Value="45"/>
-                                </StackPanel>
+                                        <TextBlock Text="Rotation (L-R)" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
+                                        <Slider Minimum="0" Maximum="360" Value="45"/>
+                                    </StackPanel>
+                                </Border>
 
                                 <!-- Right 3D Surface Viewport Placeholder -->
                                 <Border Grid.Column="1" Background="#0D0D0D" Margin="5">
@@ -217,49 +219,49 @@
                         <!-- Live Parameter Metric Grid -->
                         <UniformGrid Columns="2">
                             <Border Background="#222" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="6" Margin="2">
-                                <StackPanel TextElement.Alignment="Center">
+                                <StackPanel HorizontalAlignment="Center">
                                     <TextBlock Text="Tps" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
                                     <TextBlock Text="1.9 %" Foreground="White" FontSize="14" FontWeight="Bold"/>
                                 </StackPanel>
                             </Border>
                             <Border Background="#222" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="6" Margin="2">
-                                <StackPanel TextElement.Alignment="Center">
+                                <StackPanel HorizontalAlignment="Center">
                                     <TextBlock Text="Rpm" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
                                     <TextBlock Text="1850" Foreground="White" FontSize="14" FontWeight="Bold"/>
                                 </StackPanel>
                             </Border>
                             <Border Background="#222" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="6" Margin="2">
-                                <StackPanel TextElement.Alignment="Center">
+                                <StackPanel HorizontalAlignment="Center">
                                     <TextBlock Text="IG" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
                                     <TextBlock Text="10.6 °" Foreground="White" FontSize="14" FontWeight="Bold"/>
                                 </StackPanel>
                             </Border>
                             <Border Background="#222" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="6" Margin="2">
-                                <StackPanel TextElement.Alignment="Center">
+                                <StackPanel HorizontalAlignment="Center">
                                     <TextBlock Text="Temp" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
                                     <TextBlock Text="87.3 °C" Foreground="White" FontSize="14" FontWeight="Bold"/>
                                 </StackPanel>
                             </Border>
                             <Border Background="#222" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="6" Margin="2">
-                                <StackPanel TextElement.Alignment="Center">
+                                <StackPanel HorizontalAlignment="Center">
                                     <TextBlock Text="Inj" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
                                     <TextBlock Text="2.12 ms" Foreground="White" FontSize="14" FontWeight="Bold"/>
                                 </StackPanel>
                             </Border>
                             <Border Background="#222" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="6" Margin="2">
-                                <StackPanel TextElement.Alignment="Center">
+                                <StackPanel HorizontalAlignment="Center">
                                     <TextBlock Text="Idc" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
                                     <TextBlock Text="4.2 %" Foreground="White" FontSize="14" FontWeight="Bold"/>
                                 </StackPanel>
                             </Border>
                             <Border Background="#222" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="6" Margin="2">
-                                <StackPanel TextElement.Alignment="Center">
+                                <StackPanel HorizontalAlignment="Center">
                                     <TextBlock Text="HP" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
                                     <TextBlock Text="11.8 HP" Foreground="White" FontSize="14" FontWeight="Bold"/>
                                 </StackPanel>
                             </Border>
                             <Border Background="#222" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="6" Margin="2">
-                                <StackPanel TextElement.Alignment="Center">
+                                <StackPanel HorizontalAlignment="Center">
                                     <TextBlock Text="AFR" Foreground="#FF6D00" FontSize="10" FontWeight="Bold"/>
                                     <TextBlock Text="14.7" Foreground="White" FontSize="14" FontWeight="Bold"/>
                                 </StackPanel>
