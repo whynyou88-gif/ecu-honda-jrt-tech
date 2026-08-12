@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   build-slint-native:
-    name: Build Pure Native Slint (${{ matrix.platform }})
+    name: Build Pure Native Slint & Admin Keygen (${{ matrix.platform }})
     permissions:
       contents: write
     strategy:
@@ -22,10 +22,12 @@ jobs:
         include:
           - platform: 'windows-latest'
             target: 'x86_64-pc-windows-msvc'
-            out-name: 'JRT_Tech_ANALIST_Pro_v3.4.0_Windows_Setup.exe'
+            out-setup: 'JRT_Tech_ANALIST_Pro_v3.4.0_Windows_Setup.exe'
+            out-keygen: 'JRT_Tech_Admin_Keygen_Studio.exe'
           - platform: 'macos-latest'
             target: 'aarch64-apple-darwin'
-            out-name: 'JRT_Tech_ANALIST_Pro_v3.4.0_macOS.dmg'
+            out-setup: 'JRT_Tech_ANALIST_Pro_v3.4.0_macOS.dmg'
+            out-keygen: 'JRT_Tech_Admin_Keygen_Studio_macOS'
 
     runs-on: ${{ matrix.platform }}
 
@@ -43,10 +45,10 @@ jobs:
         with:
           workspaces: 'jrt-tech-native -> target'
 
-      - name: Build Slint Native Release Binary
+      - name: Build Slint Native Release Binaries (Main App + Keygen GUI)
         run: |
           cd jrt-tech-native
-          cargo build --release --target ${{ matrix.target }}
+          cargo build --release --target ${{ matrix.target }} --bins
 
       - name: Create Professional Windows Setup Installer (Inno Setup)
         if: matrix.platform == 'windows-latest'
@@ -54,8 +56,9 @@ jobs:
         run: |
           cd jrt-tech-native
           "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
+          cp target\${{ matrix.target }}\release\jrt-keygen-gui.exe ..\${{ matrix.out-keygen }}
 
-      - name: Create macOS DMG Installer
+      - name: Create macOS DMG Installer & Prepare Keygen
         if: matrix.platform == 'macos-latest'
         shell: bash
         run: |
@@ -63,21 +66,26 @@ jobs:
           mkdir -p dmg_root
           cp target/${{ matrix.target }}/release/jrt-tech-native dmg_root/
           hdiutil create -volname "JRT Tech ANALIST Pro" -srcfolder dmg_root -ov -format UDZO ../JRT_Tech_ANALIST_Pro_v3.4.0_macOS.dmg
+          cp target/${{ matrix.target }}/release/jrt-keygen-gui ../${{ matrix.out-keygen }}
 
-      - name: Upload Slint Native Installer Artifact
+      - name: Upload Slint Native Installers & Keygen Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.out-name }}
-          path: ${{ matrix.out-name }}
+          name: ${{ matrix.platform }}-artifacts
+          path: |
+            ${{ matrix.out-setup }}
+            ${{ matrix.out-keygen }}
 
       - name: Create / Upload GitHub Release Asset (on Tag push)
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ matrix.out-name }}
+          files: |
+            ${{ matrix.out-setup }}
+            ${{ matrix.out-keygen }}
           tag_name: ${{ github.ref_name }}
           name: 'JRT Tech ANALIST Pro ${{ github.ref_name }}'
-          body: 'Automated release build containing Pure Native Slint Professional Setup Installer (Windows Inno Setup .exe & macOS .dmg).'
+          body: 'Automated release build containing Pure Native Slint Setup Installer and Admin Keygen Studio GUI Application.'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

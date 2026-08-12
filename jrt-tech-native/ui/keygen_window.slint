@@ -1,0 +1,197 @@
+// ============================================================
+// keygen_window.slint — JRT Tech Admin Keygen Studio UI
+// Dedicated GUI application for Admin to generate customer license keys
+// ============================================================
+
+import { Theme } from "theme.slint";
+
+export component KeygenWindow inherits Window {
+    title: "JRT Tech ADMIN Keygen Studio 3.5";
+    preferred-width: 600px;
+    preferred-height: 520px;
+    background: Theme.bg-primary;
+
+    in-out property <string> customer-hwid: "";
+    in-out property <string> customer-name: "";
+    in-out property <string> generated-key: "";
+    in-out property <string> formatted-msg: "";
+    in-out property <string> status-msg: "Ready to generate keys";
+
+    callback generate-clicked(string, string);
+
+    VerticalLayout {
+        padding: 20px;
+        spacing: 16px;
+
+        // Top Header
+        Rectangle {
+            height: 50px;
+            background: Theme.bg-secondary;
+            border-radius: Theme.corner-radius;
+            border-width: 1px;
+            border-color: Theme.accent-orange;
+            padding-left: 16px; padding-right: 16px;
+
+            HorizontalLayout {
+                spacing: 10px;
+                alignment: start;
+
+                Rectangle {
+                    width: 28px; height: 28px;
+                    background: Theme.accent-orange;
+                    border-radius: 6px;
+
+                    Text {
+                        text: "🔑";
+                        font-size: 14px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                }
+
+                Text {
+                    text: "JRT TECH ADMIN KEYGEN STUDIO";
+                    font-size: 14px;
+                    font-weight: 800;
+                    color: Theme.text-primary;
+                    vertical-alignment: center;
+                }
+            }
+        }
+
+        // Customer HWID Input
+        VerticalLayout {
+            spacing: 6px;
+
+            Text {
+                text: "CUSTOMER HARDWARE ID (HWID):";
+                font-size: 11px;
+                font-weight: 700;
+                color: Theme.text-muted;
+            }
+
+            Rectangle {
+                height: 40px;
+                background: Theme.bg-card;
+                border-radius: 6px;
+                border-width: 1px;
+                border-color: Theme.border-color;
+                padding-left: 12px; padding-right: 12px;
+
+                hwid-input := TextInput {
+                    text: "JRT-";
+                    font-size: 12px;
+                    font-weight: 800;
+                    color: Theme.info-cyan;
+                    vertical-alignment: center;
+                }
+            }
+        }
+
+        // Customer Name Input
+        VerticalLayout {
+            spacing: 6px;
+
+            Text {
+                text: "CUSTOMER NAME / BENGKEL (OPTIONAL):";
+                font-size: 11px;
+                font-weight: 700;
+                color: Theme.text-muted;
+            }
+
+            Rectangle {
+                height: 40px;
+                background: Theme.bg-card;
+                border-radius: 6px;
+                border-width: 1px;
+                border-color: Theme.border-color;
+                padding-left: 12px; padding-right: 12px;
+
+                name-input := TextInput {
+                    text: "Bengkel Racing";
+                    font-size: 12px;
+                    font-weight: 600;
+                    color: Theme.text-primary;
+                    vertical-alignment: center;
+                }
+            }
+        }
+
+        // Generate Button
+        Rectangle {
+            height: 44px;
+            background: btn-gen.has-hover ? Theme.accent-dark : Theme.accent-orange;
+            border-radius: 6px;
+
+            btn-gen := TouchArea {
+                clicked => { root.generate-clicked(hwid-input.text, name-input.text); }
+            }
+
+            Text {
+                text: "⚡ GENERATE LICENSE KEY";
+                font-size: 13px;
+                font-weight: 800;
+                color: #FFFFFF;
+                horizontal-alignment: center;
+                vertical-alignment: center;
+            }
+        }
+
+        // Result Generated Key Output Box
+        VerticalLayout {
+            spacing: 6px;
+
+            Text {
+                text: "GENERATED ACTIVATION KEY:";
+                font-size: 11px;
+                font-weight: 700;
+                color: Theme.text-muted;
+            }
+
+            Rectangle {
+                height: 44px;
+                background: Theme.bg-secondary;
+                border-radius: 6px;
+                border-width: 1px;
+                border-color: Theme.success-green;
+                padding-left: 14px; padding-right: 14px;
+
+                Text {
+                    text: root.generated-key != "" ? root.generated-key : "KEY-XXXX-XXXX-XXXX-XXXX";
+                    font-size: 14px;
+                    font-weight: 900;
+                    color: root.generated-key != "" ? Theme.success-green : Theme.text-muted;
+                    vertical-alignment: center;
+                }
+            }
+        }
+
+        // Formatted WhatsApp Message Preview
+        VerticalLayout {
+            spacing: 6px;
+            vertical-stretch: 1;
+
+            Text {
+                text: "WHATSAPP MESSAGE PREVIEW (COPY & PASTE TO CUSTOMER):";
+                font-size: 11px;
+                font-weight: 700;
+                color: Theme.text-muted;
+            }
+
+            Rectangle {
+                background: Theme.bg-card;
+                border-radius: 6px;
+                border-width: 1px;
+                border-color: Theme.border-color;
+                padding: 10px;
+
+                Text {
+                    text: root.formatted-msg != "" ? root.formatted-msg : "Click Generate above to format customer WhatsApp text.";
+                    font-size: 11px;
+                    color: Theme.text-secondary;
+                    wrap: word-wrap;
+                }
+            }
+        }
+    }
+}

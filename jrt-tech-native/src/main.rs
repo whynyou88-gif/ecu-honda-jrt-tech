@@ -1,18 +1,10 @@
 // Prevents additional console window on Windows in release
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-mod kline;
-mod flash;
-mod seedkey;
-mod ecu_db;
-pub mod license;
-mod ui_bridge;
-
 use std::sync::Arc;
-use ui_bridge::{AppState, setup_ui_bridge};
-
-// Include generated Slint code from build.rs
-slint::include_modules!();
+use slint::ComponentHandle;
+use jrt_tech_native::MainWindow;
+use jrt_tech_native::ui_bridge::{AppState, setup_ui_bridge};
 
 fn main() -> Result<(), slint::PlatformError> {
     #[cfg(target_os = "windows")]
