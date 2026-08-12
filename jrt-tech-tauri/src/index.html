@@ -116,17 +116,28 @@
 </div>
 
 <script>
-  window.addEventListener('DOMContentLoaded', function() {
-    if (window.__TAURI_INTERNALS__) {
-      window.__TAURI_INTERNALS__.invoke('check_license').then(function(isActivated) {
-        if (!isActivated) {
-          document.getElementById('hwid-activation-modal').style.display = 'flex';
-          window.__TAURI_INTERNALS__.invoke('get_hwid').then(function(hwid) {
-            document.getElementById('hwid-display-code').innerText = hwid;
-          });
-        }
-      }).catch(function(e){ console.log(e); });
+  function safeInvoke(cmd, args) {
+    try {
+      if (window.__TAURI__ && window.__TAURI__.core && typeof window.__TAURI__.core.invoke === 'function') {
+        return window.__TAURI__.core.invoke(cmd, args);
+      } else if (window.__TAURI_INTERNALS__ && typeof window.__TAURI_INTERNALS__.invoke === 'function') {
+        return window.__TAURI_INTERNALS__.invoke(cmd, args);
+      }
+    } catch(e) {
+      console.warn("Invoke error:", e);
     }
+    return Promise.reject("Tauri IPC not ready");
+  }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    safeInvoke('check_license').then(function(isActivated) {
+      if (!isActivated) {
+        document.getElementById('hwid-activation-modal').style.display = 'flex';
+        safeInvoke('get_hwid').then(function(hwid) {
+          document.getElementById('hwid-display-code').innerText = hwid;
+        }).catch(function(e){ console.log(e); });
+      }
+    }).catch(function(e){ console.log(e); });
   });
 
   window.submitJrtLicense = function() {
@@ -137,18 +148,16 @@
       msgEl.innerText = 'Please enter your Activation Key';
       return;
     }
-    if (window.__TAURI_INTERNALS__) {
-      window.__TAURI_INTERNALS__.invoke('activate_license', { key: key }).then(function(res) {
-        msgEl.style.color = '#47FF7A';
-        msgEl.innerText = 'License Activated Successfully!';
-        setTimeout(function() {
-          document.getElementById('hwid-activation-modal').style.display = 'none';
-        }, 1000);
-      }).catch(function(err) {
-        msgEl.style.color = '#FF3D3D';
-        msgEl.innerText = err || 'Invalid Activation Key for this machine HWID';
-      });
-    }
+    safeInvoke('activate_license', { key: key }).then(function(res) {
+      msgEl.style.color = '#47FF7A';
+      msgEl.innerText = 'License Activated Successfully!';
+      setTimeout(function() {
+        document.getElementById('hwid-activation-modal').style.display = 'none';
+      }, 1000);
+    }).catch(function(err) {
+      msgEl.style.color = '#FF3D3D';
+      msgEl.innerText = err || 'Invalid Activation Key for this machine HWID';
+    });
   };
 </script>
 

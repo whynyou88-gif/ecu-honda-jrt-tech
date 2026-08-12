@@ -10,6 +10,7 @@
     "beforeBuildCommand": ""
   },
   "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
         "title": "JRT Tech ANALIST Pro 3.4 - Honda ECU Remap Studio",
