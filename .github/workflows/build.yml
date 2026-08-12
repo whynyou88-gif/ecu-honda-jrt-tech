@@ -22,12 +22,10 @@ jobs:
         include:
           - platform: 'windows-latest'
             target: 'x86_64-pc-windows-msvc'
-            binary-name: 'jrt-tech-native.exe'
-            out-name: 'jrt-tech-native-windows-x64.exe'
+            out-name: 'JRT_Tech_ANALIST_Pro_v3.4.0_Windows_Setup.exe'
           - platform: 'macos-latest'
             target: 'aarch64-apple-darwin'
-            binary-name: 'jrt-tech-native'
-            out-name: 'jrt-tech-native-macos-arm64'
+            out-name: 'JRT_Tech_ANALIST_Pro_v3.4.0_macOS.dmg'
 
     runs-on: ${{ matrix.platform }}
 
@@ -50,17 +48,23 @@ jobs:
           cd jrt-tech-native
           cargo build --release --target ${{ matrix.target }}
 
-      - name: Prepare Artifact
+      - name: Create Windows Setup Installer (NSIS)
+        if: matrix.platform == 'windows-latest'
+        shell: cmd
+        run: |
+          cd jrt-tech-native
+          makensis installer.nsi
+
+      - name: Create macOS DMG Installer
+        if: matrix.platform == 'macos-latest'
         shell: bash
         run: |
           cd jrt-tech-native
-          if [ "${{ matrix.platform }}" = "windows-latest" ]; then
-            cp target/${{ matrix.target }}/release/jrt-tech-native.exe ../${{ matrix.out-name }}
-          else
-            cp target/${{ matrix.target }}/release/jrt-tech-native ../${{ matrix.out-name }}
-          fi
+          mkdir -p dmg_root
+          cp target/${{ matrix.target }}/release/jrt-tech-native dmg_root/
+          hdiutil create -volname "JRT Tech ANALIST Pro" -srcfolder dmg_root -ov -format UDZO ../JRT_Tech_ANALIST_Pro_v3.4.0_macOS.dmg
 
-      - name: Upload Slint Native Artifact
+      - name: Upload Slint Native Installer Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.out-name }}
@@ -73,7 +77,7 @@ jobs:
           files: ${{ matrix.out-name }}
           tag_name: ${{ github.ref_name }}
           name: 'JRT Tech ANALIST Pro ${{ github.ref_name }}'
-          body: 'Automated release build containing Pure Native Slint executable and Tauri installer.'
+          body: 'Automated release build containing Pure Native Slint Setup Installer (Windows .exe Setup & macOS .dmg).'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
