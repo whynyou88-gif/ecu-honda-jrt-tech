@@ -1,4 +1,4 @@
-name: JRT Tech ANALIST Pro - Official Native Release Pipeline
+name: JRT Tech ANALIST Pro - Official Release Pipeline
 
 on:
   push:
@@ -51,11 +51,10 @@ jobs:
       - name: Prepare Keygen Artifact
         shell: bash
         run: |
-          cd jrt-tech-native
           if [ "${{ matrix.platform }}" = "windows-latest" ]; then
-            cp target/${{ matrix.target }}/release/jrt-keygen-gui.exe ../${{ matrix.out-keygen }}
+            cp jrt-tech-native/target/${{ matrix.target }}/release/jrt-keygen-gui.exe ./${{ matrix.out-keygen }}
           else
-            cp target/${{ matrix.target }}/release/jrt-keygen-gui ../${{ matrix.out-keygen }}
+            cp jrt-tech-native/target/${{ matrix.target }}/release/jrt-keygen-gui ./${{ matrix.out-keygen }}
           fi
 
       - name: Upload Admin Keygen Artifact
@@ -76,7 +75,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-main-app:
-    name: Build Main App Installer (${{ matrix.platform }})
+    name: Build Main App Installer & Portable Folder (${{ matrix.platform }})
     permissions:
       contents: write
     strategy:
@@ -130,3 +129,25 @@ jobs:
           releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
+
+      - name: Create Complete Portable Software Folder (ZIP Archive)
+        if: matrix.platform == 'windows-latest'
+        shell: bash
+        run: |
+          mkdir -p JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder
+          cp jrt-tech-tauri/src-tauri/target/release/jrt-tech-analist-pro.exe JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder/JRT_Tech_ANALIST_Pro.exe || true
+          cp EULA_LICENSE.txt JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder/
+          cp README_CARA_AKTIVASI.txt JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder/
+          cp HondaECUTool/data/web/hondalogo.png JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder/
+          cp HondaECUTool/data/web/logo-racing.png JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder/
+          cp jrt-tech-native/icon.ico JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder/ || true
+          7z a -tzip JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder.zip ./JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder/*
+
+      - name: Upload Portable Folder ZIP Asset (on Tag push)
+        if: matrix.platform == 'windows-latest' && startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder.zip
+          tag_name: ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
