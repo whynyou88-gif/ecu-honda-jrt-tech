@@ -14,6 +14,11 @@ use ui_bridge::{AppState, setup_ui_bridge};
 slint::include_modules!();
 
 fn main() -> Result<(), slint::PlatformError> {
+    #[cfg(target_os = "windows")]
+    if std::env::var("SLINT_BACKEND").is_err() {
+        std::env::set_var("SLINT_BACKEND", "software");
+    }
+
     env_logger::init();
     log::info!("Starting JRT Tech ANALIST Pro Pure Native Slint App...");
 
