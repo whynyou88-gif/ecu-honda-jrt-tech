@@ -160,7 +160,16 @@ hidden_imports_list = [
     # --- seed_key_provider (loaded by server) ---
     'seed_key_provider',
 
-    # --- stdlib modules PyInstaller sometimes misses ---
+    # --- stdlib modules required by aiohttp & HTTP parser ---
+    'email',
+    'email.parser',
+    'email.message',
+    'email.feedparser',
+    'email.utils',
+    'http',
+    'http.client',
+    'urllib',
+    'urllib.parse',
     'hashlib',
     'zlib',
     'struct',
@@ -202,7 +211,6 @@ excludes_list = [
     'distutils',
     'lib2to3',
     'xmlrpc',
-    'email',
     'pydoc_data',
 ]
 
