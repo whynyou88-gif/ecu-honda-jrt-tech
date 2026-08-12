@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
     <ProjectReference Include="..\JRT.Tect.Core\JRT.Tect.Core.csproj" />
-    <ProjectReference Include="..\JRT.Tect.Hardware\JRT.Tect.Hardware.csproj" />
   </ItemGroup>
 </Project>

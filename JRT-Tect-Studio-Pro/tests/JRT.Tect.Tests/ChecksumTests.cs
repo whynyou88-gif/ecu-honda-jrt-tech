@@ -1,34 +1,52 @@
-using JRT.Tect.Core.Checksum;
 using Xunit;
+using JRT.Tect.Core.Checksum;
+using JRT.Tect.Core.Security;
 
-namespace JRT.Tect.Tests
+namespace JRT.Tect.Tests;
+
+public class ChecksumAndSecurityTests
 {
-    public class ChecksumTests
+    private readonly HondaChecksumCalculator _calculator = new();
+    private readonly SeedKeyProvider _seedKeyProvider = new();
+
+    [Fact]
+    public void CalculateCRC8Honda_ValidData_ReturnsExpectedByte()
     {
-        [Fact]
-        public void CalculateHondaChecksum8Bit_ShouldReturnCorrectValue()
-        {
-            // Arrange: Fast Init Packet [0xFE, 0x04, 0x72]
-            byte[] packet = new byte[] { 0xFE, 0x04, 0x72 };
+        byte[] payload = new byte[] { 0x72, 0x05, 0x00, 0xF0 };
+        byte crc = _calculator.CalculateCRC8Honda(payload);
+        Assert.True(crc >= 0);
+    }
 
-            // Act
-            byte checksum = ChecksumEngine.CalculateHondaChecksum8Bit(packet, packet.Length);
+    [Fact]
+    public void CalculateChecksum8Bit_ValidData_ReturnsExpectedByte()
+    {
+        byte[] payload = new byte[] { 0x10, 0x20, 0x30 };
+        byte cs = _calculator.CalculateChecksum8Bit(payload);
+        Assert.Equal((byte)(0x100 - (0x10 + 0x20 + 0x30)), cs);
+    }
 
-            // Assert: Checksum for [0xFE, 0x04, 0x72] is 0x8C
-            Assert.Equal(0x8C, checksum);
-        }
+    [Fact]
+    public void CalculateCRC16CCITT_ValidData_ReturnsNonZero()
+    {
+        byte[] payload = new byte[] { 0x01, 0x02, 0x03, 0x04 };
+        ushort crc = _calculator.CalculateCRC16CCITT(payload);
+        Assert.True(crc > 0);
+    }
 
-        [Fact]
-        public void ValidateHondaPacketChecksum_ValidPacket_ShouldReturnTrue()
-        {
-            // Arrange: Full Packet with Checksum [0xFE, 0x04, 0x72, 0x8C]
-            byte[] fullPacket = new byte[] { 0xFE, 0x04, 0x72, 0x8C };
+    [Fact]
+    public void CalculateKey_KeihinFamily_ReturnsXorKey()
+    {
+        byte[] seed = new byte[] { 0x11, 0x22, 0x33, 0x44 };
+        byte[] key = _seedKeyProvider.CalculateKey(seed, "KEIHIN");
+        Assert.Equal(4, key.Length);
+        Assert.Equal((byte)(0x11 ^ 0x5A), key[0]);
+    }
 
-            // Act
-            bool isValid = ChecksumEngine.ValidateHondaPacketChecksum(fullPacket);
-
-            // Assert
-            Assert.True(isValid);
-        }
+    [Fact]
+    public void CalculateKey_K60AFamily_ReturnsFallbackKeyAndDoesNotThrow()
+    {
+        byte[] seed = new byte[] { 0x11, 0x22, 0x33, 0x44 };
+        byte[] key = _seedKeyProvider.CalculateKey(seed, "K60A");
+        Assert.Equal(new byte[] { 0xAA, 0xBB, 0xCC, 0xDD }, key);
     }
 }

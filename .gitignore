@@ -13,6 +13,12 @@ build/
 *.zip
 .DS_Store
 
+# .NET build outputs
+[bB]in/
+[oO]bj/
+*.user
+*.suo
+
 # Tauri, Slint & Cargo target dirs
 target/
 **/target/

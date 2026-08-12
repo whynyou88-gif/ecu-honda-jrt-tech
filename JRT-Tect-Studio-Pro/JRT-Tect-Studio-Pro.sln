@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E530E37A-6C8A-4CF8-BA6C-365E5C64D5AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JRT.Tect.Core", "src\JRT.Tect.Core\JRT.Tect.Core.csproj", "{C3817216-9A4C-4AF2-8AA1-F8EFCEF94E64}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JRT.Tect.Data", "src\JRT.Tect.Data\JRT.Tect.Data.csproj", "{5045616B-05FE-4FD5-9AC7-1265E88F553C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JRT.Tect.Hardware", "src\JRT.Tect.Hardware\JRT.Tect.Hardware.csproj", "{2E7DD47A-A153-4611-A4ED-B1B58E511565}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JRT.Tect.Protocols", "src\JRT.Tect.Protocols\JRT.Tect.Protocols.csproj", "{A8A9C346-EA9A-4D1A-BFB3-9DF0D9A4F9EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JRT.Tect.Desktop", "src\JRT.Tect.Desktop\JRT.Tect.Desktop.csproj", "{BE5D9FC6-0DF9-47AF-86CE-EF239FD93264}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{A0AA0258-B567-485C-9BBF-5F78ECCB6736}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JRT.Tect.Tests", "tests\JRT.Tect.Tests\JRT.Tect.Tests.csproj", "{726F26C2-CEE0-4178-864E-18B05663EA32}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C3817216-9A4C-4AF2-8AA1-F8EFCEF94E64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3817216-9A4C-4AF2-8AA1-F8EFCEF94E64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3817216-9A4C-4AF2-8AA1-F8EFCEF94E64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3817216-9A4C-4AF2-8AA1-F8EFCEF94E64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5045616B-05FE-4FD5-9AC7-1265E88F553C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5045616B-05FE-4FD5-9AC7-1265E88F553C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5045616B-05FE-4FD5-9AC7-1265E88F553C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5045616B-05FE-4FD5-9AC7-1265E88F553C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E7DD47A-A153-4611-A4ED-B1B58E511565}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E7DD47A-A153-4611-A4ED-B1B58E511565}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E7DD47A-A153-4611-A4ED-B1B58E511565}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E7DD47A-A153-4611-A4ED-B1B58E511565}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8A9C346-EA9A-4D1A-BFB3-9DF0D9A4F9EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8A9C346-EA9A-4D1A-BFB3-9DF0D9A4F9EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8A9C346-EA9A-4D1A-BFB3-9DF0D9A4F9EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8A9C346-EA9A-4D1A-BFB3-9DF0D9A4F9EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE5D9FC6-0DF9-47AF-86CE-EF239FD93264}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE5D9FC6-0DF9-47AF-86CE-EF239FD93264}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE5D9FC6-0DF9-47AF-86CE-EF239FD93264}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE5D9FC6-0DF9-47AF-86CE-EF239FD93264}.Release|Any CPU.Build.0 = Release|Any CPU
+		{726F26C2-CEE0-4178-864E-18B05663EA32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{726F26C2-CEE0-4178-864E-18B05663EA32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{726F26C2-CEE0-4178-864E-18B05663EA32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{726F26C2-CEE0-4178-864E-18B05663EA32}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C3817216-9A4C-4AF2-8AA1-F8EFCEF94E64} = {E530E37A-6C8A-4CF8-BA6C-365E5C64D5AF}
+		{5045616B-05FE-4FD5-9AC7-1265E88F553C} = {E530E37A-6C8A-4CF8-BA6C-365E5C64D5AF}
+		{2E7DD47A-A153-4611-A4ED-B1B58E511565} = {E530E37A-6C8A-4CF8-BA6C-365E5C64D5AF}
+		{A8A9C346-EA9A-4D1A-BFB3-9DF0D9A4F9EB} = {E530E37A-6C8A-4CF8-BA6C-365E5C64D5AF}
+		{BE5D9FC6-0DF9-47AF-86CE-EF239FD93264} = {E530E37A-6C8A-4CF8-BA6C-365E5C64D5AF}
+		{726F26C2-CEE0-4178-864E-18B05663EA32} = {A0AA0258-B567-485C-9BBF-5F78ECCB6736}
+	EndGlobalSection
+EndGlobal

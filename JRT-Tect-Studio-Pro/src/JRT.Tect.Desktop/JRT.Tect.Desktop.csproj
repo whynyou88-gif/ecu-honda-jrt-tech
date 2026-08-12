@@ -1,15 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <AssemblyName>JRT_Tech_ANALIST_Pro_Native</AssemblyName>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
+    <PackageReference Include="OxyPlot.Wpf" Version="2.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\JRT.Tect.Core\JRT.Tect.Core.csproj" />
+    <ProjectReference Include="..\JRT.Tect.Data\JRT.Tect.Data.csproj" />
     <ProjectReference Include="..\JRT.Tect.Hardware\JRT.Tect.Hardware.csproj" />
     <ProjectReference Include="..\JRT.Tect.Protocols\JRT.Tect.Protocols.csproj" />
   </ItemGroup>

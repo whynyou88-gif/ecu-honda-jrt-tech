@@ -1,0 +1,63 @@
+<UserControl x:Class="JRT.Tect.Desktop.Views.LivePerformanceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Foreground="#FFFFFF">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="20">
+        <StackPanel>
+            <!-- VEHICLE & ECU INFO HEADER -->
+            <Border Background="#121A24" BorderBrush="#00E5FF" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="{Binding VehicleName}" FontSize="18" FontWeight="ExtraBold" Foreground="White"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            <TextBlock Text="ECU: " Foreground="#A0AAB0" FontSize="11"/>
+                            <TextBlock Text="{Binding EcuModel}" Foreground="#47FF7A" FontWeight="Bold" FontSize="11" Margin="0,0,16,0"/>
+                            <TextBlock Text="CALIBRATION: " Foreground="#A0AAB0" FontSize="11"/>
+                            <TextBlock Text="{Binding CalibrationId}" Foreground="#FFD400" FontWeight="Bold" FontSize="11"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <Border Grid.Column="1" Background="#06090F" CornerRadius="6" Padding="12,6" BorderBrush="#00E5FF" BorderThickness="1">
+                        <TextBlock Text="K-LINE ONLINE" Foreground="#00E5FF" FontWeight="Bold" FontSize="12"/>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- ECM PARAMETERS TABLE GRID -->
+            <Border Background="#121A24" BorderBrush="#222228" BorderThickness="1" CornerRadius="8" Padding="16">
+                <StackPanel>
+                    <TextBlock Text="4. ECM PARAMETERS (QUANTUMDIAG PRO LIVE STREAM)" Foreground="#00E5FF" FontWeight="Bold" FontSize="13" Margin="0,0,0,12"/>
+                    <UniformGrid Columns="4" Margin="0,0,0,8">
+                        <Border Background="#06090F" Padding="10" Margin="4">
+                            <StackPanel>
+                                <TextBlock Text="Putaran Mesin (RPM)" Foreground="#A0AAB0" FontSize="11"/>
+                                <TextBlock Text="{Binding Rpm}" Foreground="#00E5FF" FontSize="22" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="#06090F" Padding="10" Margin="4">
+                            <StackPanel>
+                                <TextBlock Text="Tegangan TPS (Volt)" Foreground="#A0AAB0" FontSize="11"/>
+                                <TextBlock Text="{Binding TpsVoltage, StringFormat={}{0:F2} V}" Foreground="#47FF7A" FontSize="22" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="#06090F" Padding="10" Margin="4">
+                            <StackPanel>
+                                <TextBlock Text="Suhu Mesin (ECT °C)" Foreground="#A0AAB0" FontSize="11"/>
+                                <TextBlock Text="{Binding EctTemp, StringFormat={}{0:F1} °C}" Foreground="#FF9800" FontSize="22" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="#06090F" Padding="10" Margin="4">
+                            <StackPanel>
+                                <TextBlock Text="Tegangan Battery (Volt)" Foreground="#A0AAB0" FontSize="11"/>
+                                <TextBlock Text="{Binding BatteryVoltage, StringFormat={}{0:F1} V}" Foreground="#00E5FF" FontSize="22" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

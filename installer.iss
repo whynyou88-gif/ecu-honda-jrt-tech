@@ -1,9 +1,9 @@
 ; ============================================================
-; Inno Setup Script — JRT Tech ANALIST Pro 3.4
-; Optimized Windows Installer (wraps PyInstaller onedir output)
+; Inno Setup Script — JRT Tech ANALIST Pro 3.4 (Native .NET 8 WPF)
+; Optimized Standalone Windows Installer
 ;
 ; Build:  iscc installer.iss
-; Input:  dist\JRT Tech ANALIST Pro\  (PyInstaller onedir output)
+; Input:  JRT-Tect-Studio-Pro\src\JRT.Tect.Desktop\bin\Release\net8.0-windows\win-x64\publish\*
 ; Output: Output\JRT_Tech_ANALIST_Pro_v3.4_Setup.exe
 ; ============================================================
 
@@ -11,7 +11,7 @@
 #define MyAppVersion   "3.4"
 #define MyAppPublisher "JRT Tech Studio"
 #define MyAppURL       "https://github.com/whynyou88-gif/ecu-honda-jrt-tech"
-#define MyAppExeName   "JRT Tech ANALIST Pro.exe"
+#define MyAppExeName   "JRT_Tech_ANALIST_Pro_Native.exe"
 #define MyAppId        "{{C6B579E1-835A-4A73-A3B9-281C4F98E1A3}"
 
 [Setup]
@@ -49,11 +49,10 @@ ArchitecturesInstallIn64BitMode=x64compatible
 ArchitecturesAllowed=x64compatible
 
 ; Privileges — install to user folder without UAC prompt.
-; Falls back to {localappdata} if {autopf} requires admin.
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
 
-; Uninstaller (enabled by default, explicitly keep it)
+; Uninstaller
 Uninstallable=yes
 CreateUninstallRegKey=yes
 
@@ -69,8 +68,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 
 [Files]
-; Copy the entire PyInstaller onedir output folder recursively
-Source: "dist\JRT Tech ANALIST Pro\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+; Copy the entire .NET 8 WPF publish output folder recursively
+Source: "JRT-Tect-Studio-Pro\src\JRT.Tect.Desktop\bin\Release\net8.0-windows\win-x64\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 ; Start Menu shortcut
@@ -85,5 +84,4 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChang
 [UninstallDelete]
 ; Clean up logs and temp files created at runtime
 Type: filesandordirs; Name: "{app}\logs"
-Type: filesandordirs; Name: "{app}\__pycache__"
 Type: files; Name: "{app}\*.log"

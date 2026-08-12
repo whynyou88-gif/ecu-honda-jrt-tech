@@ -1,0 +1,31 @@
+<UserControl x:Class="JRT.Tect.Desktop.Views.DiagnosticView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Foreground="#FFFFFF">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="20">
+        <StackPanel>
+            <!-- DTC ACTION TOOLBAR -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                <Button Content="🔍 Read DTC" Command="{Binding ReadDtcCommand}" Background="#FF5722" Foreground="White" FontWeight="Bold" Padding="16,8" Margin="0,0,12,0"/>
+                <Button Content="🗑 Clear DTC" Command="{Binding ClearDtcCommand}" Background="#D32F2F" Foreground="White" FontWeight="Bold" Padding="16,8"/>
+            </StackPanel>
+
+            <!-- STATUS MESSAGE BANNER -->
+            <Border Background="#15161D" BorderBrush="#222228" BorderThickness="1" CornerRadius="8" Padding="14,10" Margin="0,0,0,16">
+                <TextBlock Text="{Binding StatusMessage}" Foreground="#47FF7A" FontWeight="Bold" FontSize="12"/>
+            </Border>
+
+            <!-- DTC FAULT CODES DATA GRID -->
+            <Border Background="#15161D" BorderBrush="#222228" BorderThickness="1" CornerRadius="8" Padding="16">
+                <DataGrid ItemsSource="{Binding DtcList}" AutoGenerateColumns="False" IsReadOnly="True" Background="#06090F" Foreground="White" GridLinesVisibility="Horizontal" RowBackground="#0E0E12" AlternatingRowBackground="#15161D">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Fault Code" Binding="{Binding Code}" Width="120"/>
+                        <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*"/>
+                        <DataGridCheckBoxColumn Header="MIL Active" Binding="{Binding MilStatus}" Width="100"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="140"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

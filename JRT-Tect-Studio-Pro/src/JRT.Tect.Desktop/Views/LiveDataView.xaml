@@ -1,0 +1,45 @@
+<UserControl x:Class="JRT.Tect.Desktop.Views.LiveDataView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Foreground="#FFFFFF">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="20">
+        <StackPanel>
+            <!-- SPECIAL TUNING FX & SOUND MODES -->
+            <Border Background="#15161D" BorderBrush="#FF5722" BorderThickness="1" CornerRadius="10" Padding="18" Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="🚀 SPECIAL TUNING FX &amp; SOUND MODES" Foreground="#FF5722" FontWeight="Bold" FontSize="13" Margin="0,0,0,12"/>
+                    <UniformGrid Columns="4">
+                        <Border Background="#0E0E12" Padding="12" CornerRadius="6" Margin="4">
+                            <StackPanel>
+                                <TextBlock Text="🚁 MODE HELIKOPTER" Foreground="White" FontWeight="Bold" FontSize="12"/>
+                                <TextBlock Text="Choppy Idle Sound Effect" Foreground="#8E8E93" FontSize="10" Margin="0,2,0,8"/>
+                                <CheckBox Content="Enable" IsChecked="{Binding HelicopterModeEnabled}" Foreground="#47FF7A"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="#0E0E12" Padding="12" CornerRadius="6" Margin="4">
+                            <StackPanel>
+                                <TextBlock Text="🔄 MODE ROTARY" Foreground="White" FontWeight="Bold" FontSize="12"/>
+                                <TextBlock Text="Rotary Engine Idle Pulse" Foreground="#8E8E93" FontSize="10" Margin="0,2,0,8"/>
+                                <CheckBox Content="Enable" IsChecked="{Binding RotaryModeEnabled}" Foreground="#47FF7A"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="#0E0E12" Padding="12" CornerRadius="6" Margin="4">
+                            <StackPanel>
+                                <TextBlock Text="💥 POP &amp; BANGS" Foreground="White" FontWeight="Bold" FontSize="12"/>
+                                <TextBlock Text="Decel Flame &amp; Backfire" Foreground="#8E8E93" FontSize="10" Margin="0,2,0,8"/>
+                                <CheckBox Content="Enable" IsChecked="{Binding PopBangsEnabled}" Foreground="#47FF7A"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="#0E0E12" Padding="12" CornerRadius="6" Margin="4">
+                            <StackPanel>
+                                <TextBlock Text="🚀 LAUNCH CONTROL" Foreground="White" FontWeight="Bold" FontSize="12"/>
+                                <TextBlock Text="Drag Start Anti-Lag Lock" Foreground="#8E8E93" FontSize="10" Margin="0,2,0,8"/>
+                                <CheckBox Content="Enable" IsChecked="{Binding LaunchControlEnabled}" Foreground="#47FF7A"/>
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
