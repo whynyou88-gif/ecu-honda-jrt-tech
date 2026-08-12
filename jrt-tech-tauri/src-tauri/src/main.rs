@@ -69,37 +69,38 @@ fn main() {
                             telemetry.o2 = 0.45;
                             telemetry.afr = 14.7;
                         } else {
-                            // Fetch real data from ECU
-                            let mut ecu_guard = state.ecu.lock().unwrap();
-                            if let Some(ref mut ecu) = *ecu_guard {
-                                let (msg, _, _) = kline::protocol::format_message(&[0x72], &[0x71, 0x17]);
-                                if let Some(rx) = ecu.send_raw_kline(&msg, 60) {
-                                    if rx.len() >= 8 {
-                                        let payload = if rx.len() >= 3 && rx[0] == 0x71 {
-                                            &rx[2..]
-                                        } else {
-                                            &rx[1..]
-                                        };
-                                        if payload.len() >= 2 {
-                                            let rpm = ((payload[0] as u32) << 8) | (payload[1] as u32);
-                                            if rpm < 18000 {
-                                                telemetry.rpm = rpm;
+                            // Fetch real data from ECU (using non-blocking try_lock)
+                            if let Ok(mut ecu_guard) = state.ecu.try_lock() {
+                                if let Some(ref mut ecu) = *ecu_guard {
+                                    let (msg, _, _) = kline::protocol::format_message(&[0x72], &[0x71, 0x17]);
+                                    if let Some(rx) = ecu.send_raw_kline(&msg, 50) {
+                                        if rx.len() >= 8 {
+                                            let payload = if rx.len() >= 3 && rx[0] == 0x71 {
+                                                &rx[2..]
+                                            } else {
+                                                &rx[1..]
+                                            };
+                                            if payload.len() >= 2 {
+                                                let rpm = ((payload[0] as u32) << 8) | (payload[1] as u32);
+                                                if rpm < 18000 {
+                                                    telemetry.rpm = rpm;
+                                                }
                                             }
-                                        }
-                                        if payload.len() > 2 {
-                                            telemetry.tps = payload[2] as f64 * 0.4;
-                                        }
-                                        if payload.len() > 5 {
-                                            telemetry.ect = (payload[5] as f64) - 40.0;
-                                        }
-                                        if payload.len() > 7 {
-                                            telemetry.iat = (payload[7] as f64) - 40.0;
-                                        }
-                                        if payload.len() > 9 {
-                                            telemetry.map = payload[9] as f64;
-                                        }
-                                        if payload.len() > 10 {
-                                            telemetry.batt_voltage = payload[10] as f64 / 10.0;
+                                            if payload.len() > 2 {
+                                                telemetry.tps = payload[2] as f64 * 0.4;
+                                            }
+                                            if payload.len() > 5 {
+                                                telemetry.ect = (payload[5] as f64) - 40.0;
+                                            }
+                                            if payload.len() > 7 {
+                                                telemetry.iat = (payload[7] as f64) - 40.0;
+                                            }
+                                            if payload.len() > 9 {
+                                                telemetry.map = payload[9] as f64;
+                                            }
+                                            if payload.len() > 10 {
+                                                telemetry.batt_voltage = payload[10] as f64 / 10.0;
+                                            }
                                         }
                                     }
                                 }
