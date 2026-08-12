@@ -1,0 +1,121 @@
+// ============================================================
+// license_dialog.slint — Hardware Lock Activation Modal Dialog
+// Prompt for HWID Machine Lock and Key Entry
+// ============================================================
+
+import { Theme } from "../theme.slint";
+
+export component LicenseDialog inherits Rectangle {
+    in property <string> hwid-text: "JRT-0000-0000-0000-0000";
+    in property <string> status-msg: "ACTIVATION REQUIRED";
+    in property <bool> is-error: false;
+    out property <string> input-key: key-input.text;
+    
+    callback activate-clicked(string);
+
+    background: #000000D0; // Modal dark backdrop overlay
+
+    Rectangle {
+        width: 480px; height: 320px;
+        background: Theme.bg-card;
+        border-radius: Theme.corner-radius;
+        border-width: 1px;
+        border-color: Theme.accent-orange;
+
+        VerticalLayout {
+            padding: 24px;
+            spacing: 16px;
+
+            // Header Title
+            HorizontalLayout {
+                spacing: 8px;
+                alignment: center;
+
+                Text {
+                    text: "🔒 LICENSE ACTIVATION REQUIRED";
+                    font-size: 15px;
+                    font-weight: 800;
+                    color: Theme.accent-orange;
+                    horizontal-alignment: center;
+                }
+            }
+
+            Text {
+                text: "This copy of JRT Tech ANALIST Pro is locked to this machine's Hardware ID (HWID). Please send your HWID to JRT Tech Admin to receive your official Activation Key.";
+                font-size: 11px;
+                color: Theme.text-secondary;
+                wrap: word-wrap;
+                horizontal-alignment: center;
+            }
+
+            // HWID Box Display
+            Rectangle {
+                height: 40px;
+                background: Theme.bg-secondary;
+                border-radius: 6px;
+                border-width: 1px;
+                border-color: Theme.border-color;
+                padding-left: 12px; padding-right: 12px;
+
+                HorizontalLayout {
+                    alignment: space-between;
+
+                    Text {
+                        text: "YOUR HWID: " + root.hwid-text;
+                        font-size: 12px;
+                        font-weight: 800;
+                        color: Theme.info-cyan;
+                        vertical-alignment: center;
+                    }
+                }
+            }
+
+            // License Key Input Box
+            Rectangle {
+                height: 40px;
+                background: Theme.bg-primary;
+                border-radius: 6px;
+                border-width: 1px;
+                border-color: root.is-error ? Theme.danger-red : Theme.accent-orange;
+                padding-left: 12px; padding-right: 12px;
+
+                key-input := TextInput {
+                    text: "KEY-";
+                    font-size: 12px;
+                    font-weight: 700;
+                    color: Theme.text-primary;
+                    vertical-alignment: center;
+                }
+            }
+
+            // Status Message Text
+            Text {
+                text: root.status-msg;
+                font-size: 11px;
+                font-weight: 700;
+                color: root.is-error ? Theme.danger-red : Theme.success-green;
+                horizontal-alignment: center;
+            }
+
+            // Activate Button
+            Rectangle {
+                height: 42px;
+                background: btn-act.has-hover ? Theme.accent-dark : Theme.accent-orange;
+                border-radius: 6px;
+
+                btn-act := TouchArea {
+                    clicked => { root.activate-clicked(key-input.text); }
+                }
+
+                Text {
+                    text: "🔓 ACTIVATE JRT TECH LICENSE";
+                    font-size: 12px;
+                    font-weight: 800;
+                    color: #FFFFFF;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+        }
+    }
+}

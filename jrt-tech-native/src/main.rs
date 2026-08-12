@@ -5,6 +5,7 @@ mod kline;
 mod flash;
 mod seedkey;
 mod ecu_db;
+pub mod license;
 mod ui_bridge;
 
 use std::sync::Arc;
@@ -20,7 +21,7 @@ fn main() -> Result<(), slint::PlatformError> {
     }
 
     env_logger::init();
-    log::info!("Starting JRT Tech ANALIST Pro Pure Native Slint App...");
+    log::info!("Starting JRT Tech ANALIST Pro Pure Native Slint App with HWID Machine Lock...");
 
     let main_window = MainWindow::new()?;
     let app_state = Arc::new(AppState::default());

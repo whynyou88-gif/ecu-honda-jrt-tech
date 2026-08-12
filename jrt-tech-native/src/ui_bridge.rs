@@ -32,6 +32,38 @@ impl Default for AppState {
 }
 
 pub fn setup_ui_bridge(window: &crate::MainWindow, state: Arc<AppState>) {
+    // Initial HWID Machine Lock Check
+    let hwid = crate::license::hwid::get_machine_hwid();
+    let is_active = crate::license::LicenseManager::is_activated();
+
+    window.set_hwid_text(slint::SharedString::from(&hwid));
+    window.set_is_activated(is_active);
+    if is_active {
+        window.set_license_status("ACTIVATED PRO LICENSE".into());
+    } else {
+        window.set_license_status("UNACTIVATED — LICENSE KEY REQUIRED".into());
+    }
+
+    // Callback: Activate HWID License Key
+    let window_weak = window.as_weak();
+    window.on_activate_license_clicked(move |key| {
+        let key_str = key.to_string();
+        let _ = window_weak.upgrade_in_event_loop(move |win| {
+            match crate::license::LicenseManager::activate(&key_str) {
+                Ok(_) => {
+                    win.set_is_activated(true);
+                    win.set_license_error(false);
+                    win.set_license_status("ACTIVATED PRO LICENSE".into());
+                }
+                Err(err) => {
+                    win.set_is_activated(false);
+                    win.set_license_error(true);
+                    win.set_license_status(slint::SharedString::from(err));
+                }
+            }
+        });
+    });
+
     let window_weak = window.as_weak();
     let state_conn = state.clone();
 

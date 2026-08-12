@@ -10,6 +10,7 @@ import { MapEditor } from "components/map_editor.slint";
 import { MotorsportDash } from "components/motorsport_dash.slint";
 import { DtcView } from "components/dtc_view.slint";
 import { FlashView } from "components/flash_view.slint";
+import { LicenseDialog } from "components/license_dialog.slint";
 
 export component MainWindow inherits Window {
     title: "JRT Tech ANALIST Pro 3.4 - Honda ECU Remap Studio (Native Slint)";
@@ -18,6 +19,12 @@ export component MainWindow inherits Window {
     min-width: 1024px;
     min-height: 720px;
     background: Theme.bg-primary;
+
+    // License Lock Properties
+    in-out property <bool> is-activated: false;
+    in-out property <string> hwid-text: "JRT-0000-0000-0000-0000";
+    in-out property <string> license-status: "ACTIVATION REQUIRED";
+    in-out property <bool> license-error: false;
 
     // App State Properties
     in-out property <int> active-page: 0;
@@ -44,6 +51,7 @@ export component MainWindow inherits Window {
     in-out property <int> flash-count: 0;
 
     // Callbacks to Rust Backend
+    callback activate-license-clicked(string);
     callback connect-clicked();
     callback disconnect-clicked();
     callback read-dtc-clicked();
@@ -162,5 +170,13 @@ export component MainWindow inherits Window {
                 }
             }
         }
+    }
+
+    // License Activation Overlay Dialog (if not activated)
+    if !root.is-activated : LicenseDialog {
+        hwid-text: root.hwid-text;
+        status-msg: root.license-status;
+        is-error: root.license-error;
+        activate-clicked(key) => { root.activate-license-clicked(key); }
     }
 }
