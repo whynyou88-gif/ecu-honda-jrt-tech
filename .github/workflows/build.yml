@@ -1,4 +1,4 @@
-name: JRT Tech ANALIST Pro - Native WPF (.NET 8) Release Pipeline
+name: JRT Tech ANALIST Pro - Production Build & Release Pipeline
 
 on:
   push:
@@ -13,25 +13,28 @@ permissions:
 
 jobs:
   build-windows-installer:
-    name: Build Native WPF Installer (.NET 8 + Inno Setup)
+    name: Build Windows Installer (PyInstaller Onedir + Inno Setup)
     runs-on: windows-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup .NET 8 SDK
-        uses: actions/setup-dotnet@v4
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
         with:
-          dotnet-version: '8.0.x'
+          python-version: '3.11'
+          cache: 'pip'
 
-      - name: Test Core & Protocol Solution
+      - name: Install Dependencies
         run: |
-          dotnet test JRT-Tect-Studio-Pro/JRT-Tect-Studio-Pro.sln -c Release
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
 
-      - name: Publish Standalone WPF Application
+      - name: Build Onedir Bundle with PyInstaller
         run: |
-          dotnet publish JRT-Tect-Studio-Pro/src/JRT.Tect.Desktop/JRT.Tect.Desktop.csproj -c Release -r win-x64 --self-contained true -p:PublishReadyToRun=true -p:TieredPGO=true
+          pyinstaller analist_pro.spec --clean
 
       - name: Install Inno Setup
         shell: pwsh
@@ -65,17 +68,16 @@ jobs:
           files: |
             Output/JRT_Tech_ANALIST_Pro_v3.4_Setup.exe
           tag_name: ${{ github.ref_name }}
-          name: 'JRT Tech ANALIST Pro ${{ github.ref_name }} (Native WPF .NET 8)'
+          name: 'JRT Tech ANALIST Pro ${{ github.ref_name }}'
           body: |
-            ## JRT Tech ANALIST Pro ${{ github.ref_name }} — Native WPF (.NET 8)
+            ## JRT Tech ANALIST Pro ${{ github.ref_name }} — Windows Desktop Installer
 
-            Professional Honda ECU Remap & Diagnostic Studio — High Performance WPF Desktop Edition
+            Software Diagnostic & Remapping ECU Honda Matic — 100% Exact Web Frontend
 
-            ### 🚀 Key Improvements:
-            - **100% Native C# WPF (.NET 8)** — Zero Python runtime overhead.
-            - **Anti-Freeze Navigation** — Instantaneous tab switching (< 10ms) using View Caching.
-            - **Async K-Line Protocol** — Non-blocking serial stream with `CancellationToken` and `IProgress<T>`.
-            - **On-Demand SQLite Repository** — Ultra-fast memory footprint and instant startup (< 1.5s).
+            ### 🚀 Key Optimizations:
+            - **100% Identical Visual UI & Functionality**: Exact HTML/CSS/JS interface as macOS version.
+            - **Optimized Onedir Build**: No temporary file extraction delay on startup (< 2s load time).
+            - **Clean Windows Installer**: Created with Inno Setup for easy installation without UAC prompts.
           draft: false
           prerelease: false
         env:
