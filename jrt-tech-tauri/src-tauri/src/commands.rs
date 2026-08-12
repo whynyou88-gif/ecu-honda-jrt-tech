@@ -41,6 +41,22 @@ impl Default for AppState {
     }
 }
 
+#[tauri::command]
+pub fn get_hwid() -> String {
+    crate::license::hwid::get_machine_hwid()
+}
+
+#[tauri::command]
+pub fn check_license() -> bool {
+    crate::license::LicenseManager::is_activated()
+}
+
+#[tauri::command]
+pub fn activate_license(key: String) -> Result<String, String> {
+    crate::license::LicenseManager::activate(&key)
+        .map(|_| "License Activated Successfully!".into())
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct AppStatusResponse {
     pub uptime: u64,

@@ -89,6 +89,69 @@
   </div>
 </div>
 
+<!-- HWID Machine Lock License Activation Modal -->
+<div id="hwid-activation-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.92); z-index:999999; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
+  <div style="width:480px; background:#15161D; border:1px solid #FF5722; border-radius:12px; padding:28px; box-shadow:0 20px 50px rgba(0,0,0,0.8); font-family:sans-serif; text-align:center;">
+    <div style="font-size:36px; margin-bottom:12px;">🔒</div>
+    <h3 style="color:#FF5722; margin:0 0 10px 0; font-size:18px; font-weight:800; letter-spacing:1px;">LICENSE ACTIVATION REQUIRED</h3>
+    <p style="color:#B0B0B8; font-size:12px; line-height:1.5; margin-bottom:20px;">
+      This copy of <strong>JRT Tech ANALIST Pro</strong> is locked to this machine's Hardware ID (HWID). Please send your HWID to JRT Tech Admin to receive your official Activation Key.
+    </p>
+
+    <div style="background:#0F1013; border:1px solid #2D1A15; border-radius:8px; padding:12px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-size:11px; color:#686872; font-weight:700;">YOUR HWID:</span>
+      <span id="hwid-display-code" style="font-size:14px; font-weight:800; color:#00E5FF; letter-spacing:1px;">JRT-LOADING...</span>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <input id="hwid-key-input" type="text" placeholder="Paste Activation Key here (e.g. KEY-XXXX-XXXX-XXXX)" style="width:100%; box-sizing:border-box; background:#08080A; border:1px solid #FF5722; color:#FFFFFF; border-radius:8px; padding:12px; font-size:13px; font-weight:700; text-align:center; outline:none;" />
+    </div>
+
+    <div id="hwid-status-msg" style="font-size:11px; font-weight:700; color:#FF3D3D; margin-bottom:16px;"></div>
+
+    <button onclick="window.submitJrtLicense()" style="width:100%; background:linear-gradient(135deg, #FF5722, #D32F2F); border:none; color:#FFFFFF; padding:14px; border-radius:8px; font-size:13px; font-weight:800; cursor:pointer; letter-spacing:1px; text-transform:uppercase;">
+      🔓 ACTIVATE JRT TECH LICENSE
+    </button>
+  </div>
+</div>
+
+<script>
+  window.addEventListener('DOMContentLoaded', function() {
+    if (window.__TAURI_INTERNALS__) {
+      window.__TAURI_INTERNALS__.invoke('check_license').then(function(isActivated) {
+        if (!isActivated) {
+          document.getElementById('hwid-activation-modal').style.display = 'flex';
+          window.__TAURI_INTERNALS__.invoke('get_hwid').then(function(hwid) {
+            document.getElementById('hwid-display-code').innerText = hwid;
+          });
+        }
+      }).catch(function(e){ console.log(e); });
+    }
+  });
+
+  window.submitJrtLicense = function() {
+    var key = document.getElementById('hwid-key-input').value.trim();
+    var msgEl = document.getElementById('hwid-status-msg');
+    if (!key) {
+      msgEl.style.color = '#FF3D3D';
+      msgEl.innerText = 'Please enter your Activation Key';
+      return;
+    }
+    if (window.__TAURI_INTERNALS__) {
+      window.__TAURI_INTERNALS__.invoke('activate_license', { key: key }).then(function(res) {
+        msgEl.style.color = '#47FF7A';
+        msgEl.innerText = 'License Activated Successfully!';
+        setTimeout(function() {
+          document.getElementById('hwid-activation-modal').style.display = 'none';
+        }, 1000);
+      }).catch(function(err) {
+        msgEl.style.color = '#FF3D3D';
+        msgEl.innerText = err || 'Invalid Activation Key for this machine HWID';
+      });
+    }
+  };
+</script>
+
 <!-- Toast Container -->
 <div id="toast-container"></div>
 

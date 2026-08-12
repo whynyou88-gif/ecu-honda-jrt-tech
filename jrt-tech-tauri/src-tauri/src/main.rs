@@ -5,6 +5,7 @@ mod kline;
 mod flash;
 mod seedkey;
 mod ecu_db;
+pub mod license;
 mod commands;
 
 use commands::*;
@@ -21,6 +22,9 @@ fn main() {
         .plugin(tauri_plugin_shell::init())
         .manage(AppState::default())
         .invoke_handler(tauri::generate_handler![
+            get_hwid,
+            check_license,
+            activate_license,
             get_status,
             get_info,
             get_ports,
