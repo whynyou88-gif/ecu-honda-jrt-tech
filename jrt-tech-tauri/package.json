@@ -1,0 +1,17 @@
+{
+  "name": "jrt-tech-analist-pro",
+  "version": "3.4.0",
+  "description": "JRT Tech ANALIST Pro 3.4 - Honda ECU Remap Studio (Tauri)",
+  "private": true,
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2"
+  }
+}

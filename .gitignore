@@ -12,3 +12,9 @@ build/
 *.apk
 *.zip
 .DS_Store
+
+# Tauri & Node
+node_modules/
+jrt-tech-tauri/src-tauri/target/
+jrt-tech-tauri/node_modules/
+jrt-tech-tauri/dist/

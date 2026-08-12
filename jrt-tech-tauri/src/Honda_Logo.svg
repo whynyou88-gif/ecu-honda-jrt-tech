@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 320" width="500" height="320">
+  <g fill="#FF2A2A" stroke="none">
+    <!-- Honda Wing Feather 1 (Top Feather) -->
+    <path d="M 30,220 C 80,190 180,120 400,30 C 340,58 250,102 140,160 C 90,186 50,206 30,220 Z"/>
+    <!-- Honda Wing Feather 2 (Middle Feather) -->
+    <path d="M 50,248 C 100,218 200,148 425,60 C 365,88 270,132 160,190 C 110,216 70,234 50,248 Z"/>
+    <!-- Honda Wing Feather 3 (Lower Feather) -->
+    <path d="M 70,275 C 120,245 220,175 450,90 C 390,118 290,162 180,220 C 130,246 90,262 70,275 Z"/>
+    <!-- Base Foundation Bar -->
+    <path d="M 30,285 L 470,285 C 470,285 450,300 430,300 L 30,300 Z"/>
+  </g>
+</svg>
