@@ -1,0 +1,19 @@
+# JRT Tech ANALIST Pro — Python Dependencies
+# Install: pip install -r requirements.txt
+
+# Core GUI (pywebview + Windows backends)
+pywebview>=4.0
+pythonnet>=3.0
+bottle>=0.12
+
+# HTTP Server (localhost backend)
+aiohttp>=3.9
+
+# Serial Communication (FTDI K-Line adapter)
+pyserial>=3.5
+
+# FTDI Direct Driver (optional)
+pylibftdi>=0.21
+
+# Build Tools (development only)
+pyinstaller>=6.0
