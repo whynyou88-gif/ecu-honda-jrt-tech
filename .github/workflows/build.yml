@@ -1,4 +1,4 @@
-name: JRT Tech ANALIST Pro - Pure Native Slint & Tauri Release
+name: JRT Tech ANALIST Pro - Official Native Release Pipeline
 
 on:
   push:
@@ -12,8 +12,8 @@ permissions:
   contents: write
 
 jobs:
-  build-slint-native:
-    name: Build Pure Native Slint & Admin Keygen (${{ matrix.platform }})
+  build-admin-keygen:
+    name: Build Admin Keygen Studio (${{ matrix.platform }})
     permissions:
       contents: write
     strategy:
@@ -22,11 +22,9 @@ jobs:
         include:
           - platform: 'windows-latest'
             target: 'x86_64-pc-windows-msvc'
-            out-setup: 'JRT_Tech_ANALIST_Pro_v3.4.0_Windows_Setup.exe'
             out-keygen: 'JRT_Tech_Admin_Keygen_Studio.exe'
           - platform: 'macos-latest'
             target: 'aarch64-apple-darwin'
-            out-setup: 'JRT_Tech_ANALIST_Pro_v3.4.0_macOS.dmg'
             out-keygen: 'JRT_Tech_Admin_Keygen_Studio_macOS'
 
     runs-on: ${{ matrix.platform }}
@@ -45,52 +43,40 @@ jobs:
         with:
           workspaces: 'jrt-tech-native -> target'
 
-      - name: Build Slint Native Release Binaries (Main App + Keygen GUI)
+      - name: Build Admin Keygen Binary
         run: |
           cd jrt-tech-native
-          cargo build --release --target ${{ matrix.target }} --bins
+          cargo build --release --target ${{ matrix.target }} --bin jrt-keygen-gui
 
-      - name: Create Professional Windows Setup Installer (Inno Setup)
-        if: matrix.platform == 'windows-latest'
-        shell: cmd
-        run: |
-          cd jrt-tech-native
-          "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
-          cp target\${{ matrix.target }}\release\jrt-keygen-gui.exe ..\${{ matrix.out-keygen }}
-
-      - name: Create macOS DMG Installer & Prepare Keygen
-        if: matrix.platform == 'macos-latest'
+      - name: Prepare Keygen Artifact
         shell: bash
         run: |
           cd jrt-tech-native
-          mkdir -p dmg_root
-          cp target/${{ matrix.target }}/release/jrt-tech-native dmg_root/
-          hdiutil create -volname "JRT Tech ANALIST Pro" -srcfolder dmg_root -ov -format UDZO ../JRT_Tech_ANALIST_Pro_v3.4.0_macOS.dmg
-          cp target/${{ matrix.target }}/release/jrt-keygen-gui ../${{ matrix.out-keygen }}
+          if [ "${{ matrix.platform }}" = "windows-latest" ]; then
+            cp target/${{ matrix.target }}/release/jrt-keygen-gui.exe ../${{ matrix.out-keygen }}
+          else
+            cp target/${{ matrix.target }}/release/jrt-keygen-gui ../${{ matrix.out-keygen }}
+          fi
 
-      - name: Upload Slint Native Installers & Keygen Artifacts
+      - name: Upload Admin Keygen Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.platform }}-artifacts
-          path: |
-            ${{ matrix.out-setup }}
-            ${{ matrix.out-keygen }}
+          name: ${{ matrix.out-keygen }}
+          path: ${{ matrix.out-keygen }}
 
-      - name: Create / Upload GitHub Release Asset (on Tag push)
+      - name: Upload Keygen Release Asset (on Tag push)
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            ${{ matrix.out-setup }}
-            ${{ matrix.out-keygen }}
+          files: ${{ matrix.out-keygen }}
           tag_name: ${{ github.ref_name }}
           name: 'JRT Tech ANALIST Pro ${{ github.ref_name }}'
-          body: 'Automated release build containing Pure Native Slint Setup Installer and Admin Keygen Studio GUI Application.'
+          body: 'Official 100% exact release build for JRT Tech ANALIST Pro.'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  build-tauri:
-    name: Build Tauri Bundle (${{ matrix.platform }})
+  build-main-app:
+    name: Build Main App Installer (${{ matrix.platform }})
     permissions:
       contents: write
     strategy:
@@ -132,7 +118,7 @@ jobs:
           cd jrt-tech-tauri
           npm install
 
-      - name: Build Tauri Application & Create Release
+      - name: Build Main Application Installer & Create Release
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -140,7 +126,7 @@ jobs:
           projectPath: 'jrt-tech-tauri'
           tagName: ${{ github.ref_name }}
           releaseName: 'JRT Tech ANALIST Pro ${{ github.ref_name }}'
-          releaseBody: 'Automated release build for JRT Tech ANALIST Pro 3.4'
+          releaseBody: 'Official release build containing 100% exact original UI and fast Rust backend.'
           releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
