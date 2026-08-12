@@ -1,4 +1,4 @@
-name: JRT Tech ANALIST Pro - Official Release Pipeline
+name: JRT Tech ANALIST Pro - Setup Installer Release Pipeline
 
 on:
   push:
@@ -74,8 +74,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  build-main-app:
-    name: Build Main App Installer & Portable Folder (${{ matrix.platform }})
+  build-main-setup-installer:
+    name: Build Setup Wizard Installer (${{ matrix.platform }})
     permissions:
       contents: write
     strategy:
@@ -85,9 +85,11 @@ jobs:
           - platform: 'windows-latest'
             args: ''
             target: 'x86_64-pc-windows-msvc'
+            out-setup: 'JRT_Tech_ANALIST_Pro_v3.4.0_Windows_Setup.exe'
           - platform: 'macos-latest'
             args: '--target universal-apple-darwin'
             target: 'universal-apple-darwin'
+            out-setup: 'JRT_Tech_ANALIST_Pro_v3.4.0_macOS.dmg'
 
     runs-on: ${{ matrix.platform }}
 
@@ -117,7 +119,7 @@ jobs:
           cd jrt-tech-tauri
           npm install
 
-      - name: Build Main Application Installer & Create Release
+      - name: Build Setup Wizard Installer & Release
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -125,29 +127,21 @@ jobs:
           projectPath: 'jrt-tech-tauri'
           tagName: ${{ github.ref_name }}
           releaseName: 'JRT Tech ANALIST Pro ${{ github.ref_name }}'
-          releaseBody: 'Official release build containing 100% exact original UI and fast Rust backend.'
+          releaseBody: 'Official release build containing 100% exact original UI, NSIS Setup Wizard Installer, and fast Rust backend.'
           releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
 
-      - name: Create Complete Portable Software Folder (ZIP Archive)
-        if: matrix.platform == 'windows-latest'
+      - name: Rename & Upload Main Setup Installer (on Tag push)
+        if: startsWith(github.ref, 'refs/tags/v')
         shell: bash
         run: |
-          mkdir -p JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder
-          cp jrt-tech-tauri/src-tauri/target/release/jrt-tech-analist-pro.exe JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder/JRT_Tech_ANALIST_Pro.exe || true
-          cp EULA_LICENSE.txt JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder/
-          cp README_CARA_AKTIVASI.txt JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder/
-          cp HondaECUTool/data/web/hondalogo.png JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder/
-          cp HondaECUTool/data/web/logo-racing.png JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder/
-          cp jrt-tech-native/icon.ico JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder/ || true
-          7z a -tzip JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder.zip ./JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder/*
-
-      - name: Upload Portable Folder ZIP Asset (on Tag push)
-        if: matrix.platform == 'windows-latest' && startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: JRT_Tech_ANALIST_Pro_v3.4.0_Portable_Folder.zip
-          tag_name: ${{ github.ref_name }}
+          if [ "${{ matrix.platform }}" = "windows-latest" ]; then
+            SETUP_FILE=$(find jrt-tech-tauri/src-tauri/target/release/bundle/nsis -name "*.exe" | head -n 1)
+            if [ -n "$SETUP_FILE" ]; then
+              cp "$SETUP_FILE" ./${{ matrix.out-setup }}
+              gh release upload ${{ github.ref_name }} ./${{ matrix.out-setup }} --clobber
+            fi
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

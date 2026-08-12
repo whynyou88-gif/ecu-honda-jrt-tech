@@ -29,7 +29,7 @@
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": ["nsis"],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -37,12 +37,20 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
+    "resources": [
+      "../../EULA_LICENSE.txt",
+      "../../README_CARA_AKTIVASI.txt"
+    ],
     "windows": {
       "certificateThumbprint": null,
       "digestAlgorithm": "sha256",
       "timestampUrl": "",
       "webviewInstallMode": {
         "type": "downloadBootstrapper"
+      },
+      "nsis": {
+        "installerIcon": "icons/icon.ico",
+        "installMode": "perMachine"
       }
     }
   },
