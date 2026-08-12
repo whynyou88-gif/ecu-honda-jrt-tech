@@ -1,0 +1,234 @@
+// ============================================================
+// flash_view.slint — ECU Flash Read/Write & Safety Guard View
+// ============================================================
+
+import { Theme } from "../theme.slint";
+
+export component FlashView inherits Rectangle {
+    in property <bool> is-flashing: false;
+    in property <int> flash-percent: 0;
+    in property <string> flash-msg: "Ready to flash ECU";
+    in property <string> flash-state: "IDLE";
+    in property <int> flash-count: 0;
+    in property <float> battery-volts: 12.6;
+
+    callback start-read-clicked();
+    callback start-write-clicked();
+    callback recovery-clicked();
+    callback reset-count-clicked();
+
+    background: Theme.bg-card;
+    border-radius: Theme.corner-radius;
+    border-width: 1px;
+    border-color: Theme.border-color;
+
+    VerticalLayout {
+        padding: 16px;
+        spacing: 14px;
+
+        // Title Header
+        HorizontalLayout {
+            spacing: 12px;
+            alignment: center;
+
+            Text {
+                text: "Keihin PGM-FI Flash Programmer";
+                font-size: 16px;
+                font-weight: 800;
+                color: Theme.text-primary;
+                vertical-alignment: center;
+            }
+
+            Rectangle { horizontal-stretch: 1; }
+
+            Text {
+                text: "Total Flash Writes: " + root.flash-count + "x";
+                font-size: 11px;
+                font-weight: 700;
+                color: Theme.info-cyan;
+                vertical-alignment: center;
+            }
+
+            Rectangle {
+                width: 90px; height: 26px;
+                background: btn-rst.has-hover ? Theme.bg-glass : Theme.bg-secondary;
+                border-radius: 4px;
+
+                btn-rst := TouchArea {
+                    clicked => { root.reset-count-clicked(); }
+                }
+
+                Text { text: "↺ Reset Counter"; font-size: 10px; color: Theme.text-secondary; horizontal-alignment: center; vertical-alignment: center; }
+            }
+        }
+
+        // Safety Guard Checklist Container
+        Rectangle {
+            background: Theme.bg-primary;
+            border-radius: Theme.corner-radius-sm;
+            border-width: 1px;
+            border-color: Theme.accent-orange;
+            padding: 12px;
+
+            VerticalLayout {
+                spacing: 6px;
+
+                Text {
+                    text: "⚡ SAFETY GUARD PRE-FLIGHT CHECKLIST (PGM-FI SAFETY PROTOCOL)";
+                    font-size: 11px;
+                    font-weight: 800;
+                    color: Theme.accent-orange;
+                }
+
+                HorizontalLayout {
+                    spacing: 16px;
+
+                    Text {
+                        text: (root.battery-volts >= 11.5 ? "✓" : "❌") + " Battery Voltage ≥ 11.5V (Current: " + (Math.round(root.battery-volts * 10) / 10) + "V)";
+                        font-size: 11px;
+                        font-weight: 700;
+                        color: root.battery-volts >= 11.5 ? Theme.success-green : Theme.danger-red;
+                    }
+
+                    Text {
+                        text: "✓ Synchronous Auto-Backup (Pre-Erase fsync)";
+                        font-size: 11px;
+                        font-weight: 700;
+                        color: Theme.success-green;
+                    }
+
+                    Text {
+                        text: "✓ 100% Read-Back Verification";
+                        font-size: 11px;
+                        font-weight: 700;
+                        color: Theme.success-green;
+                    }
+                }
+            }
+        }
+
+        // Action Buttons Row
+        HorizontalLayout {
+            spacing: 12px;
+
+            // Read ECU Calibration Button
+            Rectangle {
+                height: 42px;
+                background: btn-rd.has-hover ? Theme.bg-glass : Theme.bg-secondary;
+                border-radius: Theme.corner-radius-sm;
+                border-width: 1px;
+                border-color: Theme.info-cyan;
+                horizontal-stretch: 1;
+
+                btn-rd := TouchArea {
+                    clicked => { root.start-read-clicked(); }
+                }
+
+                Text {
+                    text: "📥 READ ECU Calibration Image";
+                    font-size: 12px;
+                    font-weight: 800;
+                    color: Theme.info-cyan;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+
+            // Write ECU Flash Button
+            Rectangle {
+                height: 42px;
+                background: btn-wr.has-hover ? Theme.accent-dark : Theme.accent-orange;
+                border-radius: Theme.corner-radius-sm;
+                horizontal-stretch: 1;
+
+                btn-wr := TouchArea {
+                    clicked => { root.start-write-clicked(); }
+                }
+
+                Text {
+                    text: "🔥 WRITE ECU Flash Memory";
+                    font-size: 12px;
+                    font-weight: 800;
+                    color: #FFFFFF;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+
+            // Unbrick Bootloader Recovery Button
+            Rectangle {
+                height: 42px;
+                background: btn-rec.has-hover ? #B71C1C : Theme.accent-red;
+                border-radius: Theme.corner-radius-sm;
+                horizontal-stretch: 1;
+
+                btn-rec := TouchArea {
+                    clicked => { root.recovery-clicked(); }
+                }
+
+                Text {
+                    text: "🚨 UNBRICK Bootloader Recovery";
+                    font-size: 12px;
+                    font-weight: 800;
+                    color: #FFFFFF;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+        }
+
+        // Flash Progress Status Panel
+        Rectangle {
+            background: Theme.bg-primary;
+            border-radius: Theme.corner-radius-sm;
+            padding: 14px;
+            vertical-stretch: 1;
+
+            VerticalLayout {
+                spacing: 10px;
+                alignment: center;
+
+                HorizontalLayout {
+                    alignment: space-between;
+
+                    Text {
+                        text: "Progress State: [" + root.flash-state + "]";
+                        font-size: 11px;
+                        font-weight: 800;
+                        color: Theme.accent-orange;
+                    }
+
+                    Text {
+                        text: root.flash-percent + "%";
+                        font-size: 14px;
+                        font-weight: 900;
+                        color: Theme.text-primary;
+                    }
+                }
+
+                // Main Progress Bar Track
+                Rectangle {
+                    height: 16px;
+                    background: Theme.bg-secondary;
+                    border-radius: 8px;
+
+                    Rectangle {
+                        x: 0;
+                        width: parent.width * (root.flash-percent / 100.0);
+                        height: parent.height;
+                        background: @linear-gradient(90deg, Theme.accent-orange 0%, Theme.success-green 100%);
+                        border-radius: 8px;
+                    }
+                }
+
+                Text {
+                    text: root.flash-msg;
+                    font-size: 11px;
+                    font-weight: 600;
+                    color: Theme.text-secondary;
+                    horizontal-alignment: center;
+                }
+            }
+        }
+    }
+}

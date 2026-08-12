@@ -1,0 +1,166 @@
+// ============================================================
+// main_window.slint — JRT Tech ANALIST Pro Main Application Window
+// Pure Native Slint Desktop Application
+// ============================================================
+
+import { Theme } from "theme.slint";
+import { Sidebar } from "components/sidebar.slint";
+import { Header } from "components/header.slint";
+import { MapEditor } from "components/map_editor.slint";
+import { MotorsportDash } from "components/motorsport_dash.slint";
+import { DtcView } from "components/dtc_view.slint";
+import { FlashView } from "components/flash_view.slint";
+
+export component MainWindow inherits Window {
+    title: "JRT Tech ANALIST Pro 3.4 - Honda ECU Remap Studio (Native Slint)";
+    preferred-width: 1280px;
+    preferred-height: 820px;
+    min-width: 1024px;
+    min-height: 720px;
+    background: Theme.bg-primary;
+
+    // App State Properties
+    in-out property <int> active-page: 0;
+    in-out property <bool> is-connected: false;
+    in-out property <bool> is-simulation: false;
+    in-out property <float> battery-voltage: 12.6;
+    in-out property <int> dtc-count: 0;
+
+    // Telemetry Properties
+    in-out property <int> rpm: 1500;
+    in-out property <float> tps: 0.0;
+    in-out property <float> map-val: 101.3;
+    in-out property <float> ect: 85.0;
+    in-out property <float> iat: 32.0;
+    in-out property <float> inj-pw: 2.5;
+    in-out property <float> ign-timing: 15.0;
+    in-out property <int> speed: 0;
+
+    // Flash State Properties
+    in-out property <bool> is-flashing: false;
+    in-out property <int> flash-percent: 0;
+    in-out property <string> flash-msg: "Ready to flash ECU";
+    in-out property <string> flash-state: "IDLE";
+    in-out property <int> flash-count: 0;
+
+    // Callbacks to Rust Backend
+    callback connect-clicked();
+    callback disconnect-clicked();
+    callback read-dtc-clicked();
+    callback clear-dtc-clicked();
+    callback start-flash-read();
+    callback start-flash-write();
+    callback start-recovery();
+    callback reset-flash-count();
+
+    HorizontalLayout {
+        // Left Sidebar Navigation
+        Sidebar {
+            current-page: root.active-page;
+            dtc-count: root.dtc-count;
+            page-changed(idx) => {
+                root.active-page = idx;
+            }
+        }
+
+        // Main Content Area
+        VerticalLayout {
+            // Top Header Bar
+            Header {
+                title: root.active-page == 0 ? "Dashboard" : (
+                    root.active-page == 1 ? "🏁 LIVE PERFORMANCE CLUSTER" : (
+                        root.active-page == 2 ? "Live Telemetry" : (
+                            root.active-page == 3 ? "Diagnostic Trouble Codes" : (
+                                root.active-page == 4 ? "Map Editor" : (
+                                    root.active-page == 5 ? "Dyno Test Simulation" : (
+                                        root.active-page == 6 ? "Flash ECU Programming" : (
+                                            root.active-page == 7 ? "Database ECU Models" : "System Tools"
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                );
+                is-connected: root.is-connected;
+                is-simulation: root.is-simulation;
+                battery-voltage: root.battery-voltage;
+
+                connect-clicked => { root.connect-clicked(); }
+                disconnect-clicked => { root.disconnect-clicked(); }
+            }
+
+            // Page Container Area
+            Rectangle {
+                padding: 12px;
+                vertical-stretch: 1;
+
+                // Page 0 & 1: Motorsport Dash Cluster
+                if root.active-page == 0 || root.active-page == 1 || root.active-page == 2 : MotorsportDash {
+                    rpm: root.rpm;
+                    tps: root.tps;
+                    map-val: root.map-val;
+                    ect: root.ect;
+                    iat: root.iat;
+                    vbat: root.battery-voltage;
+                    inj-pw: root.inj-pw;
+                    ign-timing: root.ign-timing;
+                    speed: root.speed;
+                }
+
+                // Page 3: DTC Fault Reader View
+                if root.active-page == 3 : DtcView {
+                    dtc-count: root.dtc-count;
+                    mil-on: root.dtc-count > 0;
+                    read-dtc-clicked => { root.read-dtc-clicked(); }
+                    clear-dtc-clicked => { root.clear-dtc-clicked(); }
+                }
+
+                // Page 4: Map Editor Heatmap View
+                if root.active-page == 4 : MapEditor {
+                    map-title: "Main Fuel Calibration Map (16x16 Heatmap)";
+                }
+
+                // Page 6: Flash Programming View
+                if root.active-page == 6 : FlashView {
+                    is-flashing: root.is-flashing;
+                    flash-percent: root.flash-percent;
+                    flash-msg: root.flash-msg;
+                    flash-state: root.flash-state;
+                    flash-count: root.flash-count;
+                    battery-volts: root.battery-voltage;
+
+                    start-read-clicked => { root.start-flash-read(); }
+                    start-write-clicked => { root.start-flash-write(); }
+                    recovery-clicked => { root.start-recovery(); }
+                    reset-count-clicked => { root.reset-flash-count(); }
+                }
+
+                // Fallback Page View
+                if root.active-page != 0 && root.active-page != 1 && root.active-page != 2 && root.active-page != 3 && root.active-page != 4 && root.active-page != 6 : Rectangle {
+                    background: Theme.bg-card;
+                    border-radius: Theme.corner-radius;
+                    
+                    VerticalLayout {
+                        alignment: center;
+                        spacing: 8px;
+
+                        Text {
+                            text: "JRT Tech Studio Pro - Native View Module";
+                            font-size: 16px;
+                            font-weight: 800;
+                            color: Theme.accent-orange;
+                            horizontal-alignment: center;
+                        }
+                        Text {
+                            text: "All K-Line logic, ECU Database & Slint Native Renderers Ready.";
+                            font-size: 12px;
+                            color: Theme.text-secondary;
+                            horizontal-alignment: center;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

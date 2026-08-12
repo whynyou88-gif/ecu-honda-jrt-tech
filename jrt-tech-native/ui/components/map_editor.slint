@@ -1,0 +1,207 @@
+// ============================================================
+// map_editor.slint — TunerPro Style Calibration Map Editor
+// Dynamic Heatmap Colors, 16x16 / 32x32 Grid Cell Matrix
+// ============================================================
+
+import { Theme } from "../theme.slint";
+
+export component MapCell inherits Rectangle {
+    in property <float> val: 1.0;
+    in property <float> min-val: 0.5;
+    in property <float> max-val: 3.0;
+    in property <bool> is-selected: false;
+    in property <bool> is-live-cursor: false;
+
+    // Calculate normalized value ratio (0.0 to 1.0)
+    property <float> ratio: Math.max(0.0, Math.min(1.0, (val - min-val) / Math.max(0.001, max-val - min-val)));
+
+    // Heatmap background color blending
+    background: is-selected ? #FFFFFF : (
+        ratio < 0.25 ? Theme.heat-cold.mix(Theme.heat-cool, ratio * 4.0) : (
+            ratio < 0.50 ? Theme.heat-cool.mix(Theme.heat-neutral, (ratio - 0.25) * 4.0) : (
+                ratio < 0.75 ? Theme.heat-neutral.mix(Theme.heat-warm, (ratio - 0.50) * 4.0) :
+                    Theme.heat-warm.mix(Theme.heat-hot, (ratio - 0.75) * 4.0)
+            )
+        )
+    );
+
+    border-width: is-selected ? 2px : (is-live-cursor ? 2px : 1px);
+    border-color: is-selected ? Theme.accent-orange : (is-live-cursor ? #FFFFFF : #08080A);
+    border-radius: 2px;
+
+    Text {
+        text: Math.round(root.val * 100) / 100;
+        font-size: 10px;
+        font-weight: 700;
+        color: root.is-selected ? #000000 : (root.ratio > 0.6 ? #FFFFFF : #000000);
+        horizontal-alignment: center;
+        vertical-alignment: center;
+    }
+}
+
+export component MapEditor inherits Rectangle {
+    in property <string> map-title: "Main Fuel Calibration Map (16x16)";
+    in property <int> rows: 16;
+    in property <int> cols: 16;
+    in property <int> selected-row: 0;
+    in property <int> selected-col: 0;
+    in property <float> selected-value: 1.50;
+
+    callback cell-selected(int, int);
+    callback value-changed(float);
+
+    background: Theme.bg-card;
+    border-radius: Theme.corner-radius;
+    border-width: 1px;
+    border-color: Theme.border-color;
+
+    VerticalLayout {
+        padding: 12px;
+        spacing: 10px;
+
+        // Header Control Bar
+        HorizontalLayout {
+            spacing: 12px;
+            alignment: center;
+
+            Text {
+                text: root.map-title;
+                font-size: 14px;
+                font-weight: 700;
+                color: Theme.text-primary;
+                vertical-alignment: center;
+            }
+
+            Rectangle { horizontal-stretch: 1; }
+
+            // Value Edit Tool Strip
+            Text { text: "Cell Value:"; font-size: 11px; color: Theme.text-muted; vertical-alignment: center; }
+
+            Rectangle {
+                width: 70px; height: 28px;
+                background: Theme.bg-secondary;
+                border-radius: 4px;
+                border-width: 1px;
+                border-color: Theme.accent-orange;
+
+                Text {
+                    text: Math.round(root.selected-value * 100) / 100;
+                    font-size: 12px;
+                    font-weight: 700;
+                    color: Theme.info-cyan;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+
+            // Quick Modify Buttons
+            Rectangle {
+                width: 32px; height: 28px;
+                background: btn-plus.has-hover ? Theme.accent-dark : Theme.accent-orange;
+                border-radius: 4px;
+
+                btn-plus := TouchArea {
+                    clicked => { root.value-changed(root.selected-value + 0.05); }
+                }
+
+                Text { text: "+"; font-size: 14px; font-weight: 800; color: #FFFFFF; horizontal-alignment: center; vertical-alignment: center; }
+            }
+
+            Rectangle {
+                width: 32px; height: 28px;
+                background: btn-minus.has-hover ? Theme.accent-dark : Theme.accent-orange;
+                border-radius: 4px;
+
+                btn-minus := TouchArea {
+                    clicked => { root.value-changed(root.selected-value - 0.05); }
+                }
+
+                Text { text: "-"; font-size: 14px; font-weight: 800; color: #FFFFFF; horizontal-alignment: center; vertical-alignment: center; }
+            }
+        }
+
+        // Map Table View Header (RPM vs TPS)
+        Rectangle {
+            height: 24px;
+            background: Theme.bg-secondary;
+
+            HorizontalLayout {
+                padding-left: 40px;
+                spacing: 2px;
+
+                Text { text: "1000"; font-size: 9px; color: Theme.text-muted; horizontal-alignment: center; horizontal-stretch: 1; }
+                Text { text: "1500"; font-size: 9px; color: Theme.text-muted; horizontal-alignment: center; horizontal-stretch: 1; }
+                Text { text: "2000"; font-size: 9px; color: Theme.text-muted; horizontal-alignment: center; horizontal-stretch: 1; }
+                Text { text: "3000"; font-size: 9px; color: Theme.text-muted; horizontal-alignment: center; horizontal-stretch: 1; }
+                Text { text: "4000"; font-size: 9px; color: Theme.text-muted; horizontal-alignment: center; horizontal-stretch: 1; }
+                Text { text: "5000"; font-size: 9px; color: Theme.text-muted; horizontal-alignment: center; horizontal-stretch: 1; }
+                Text { text: "6000"; font-size: 9px; color: Theme.text-muted; horizontal-alignment: center; horizontal-stretch: 1; }
+                Text { text: "7000"; font-size: 9px; color: Theme.text-muted; horizontal-alignment: center; horizontal-stretch: 1; }
+                Text { text: "8000"; font-size: 9px; color: Theme.text-muted; horizontal-alignment: center; horizontal-stretch: 1; }
+                Text { text: "9000"; font-size: 9px; color: Theme.text-muted; horizontal-alignment: center; horizontal-stretch: 1; }
+                Text { text: "10000"; font-size: 9px; color: Theme.text-muted; horizontal-alignment: center; horizontal-stretch: 1; }
+                Text { text: "11000"; font-size: 9px; color: Theme.text-muted; horizontal-alignment: center; horizontal-stretch: 1; }
+            }
+        }
+
+        // Map Cell Grid Matrix Container
+        Rectangle {
+            background: Theme.bg-primary;
+            border-radius: 4px;
+            vertical-stretch: 1;
+
+            VerticalLayout {
+                padding: 4px;
+                spacing: 2px;
+
+                // 8 Rows Preview Matrix Grid
+                for r in 8 : HorizontalLayout {
+                    spacing: 2px;
+
+                    // Row Axis Label (TPS %)
+                    Rectangle {
+                        width: 36px;
+                        background: Theme.bg-secondary;
+                        Text {
+                            text: (r * 12.5) + "%";
+                            font-size: 9px;
+                            color: Theme.text-muted;
+                            horizontal-alignment: center;
+                            vertical-alignment: center;
+                        }
+                    }
+
+                    // Columns Cells
+                    for c in 12 : MapCell {
+                        val: 1.0 + (r * 0.15) + (c * 0.08);
+                        min-val: 0.8;
+                        max-val: 2.8;
+                        is-selected: root.selected-row == r && root.selected-col == c;
+
+                        TouchArea {
+                            clicked => {
+                                root.cell-selected(r, c);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Bottom Heatmap Color Scale Legend
+        HorizontalLayout {
+            spacing: 8px;
+            alignment: center;
+
+            Text { text: "COLD (Lean)"; font-size: 9px; color: Theme.info-cyan; vertical-alignment: center; }
+
+            Rectangle {
+                width: 140px; height: 10px;
+                border-radius: 5px;
+                background: @linear-gradient(90deg, Theme.heat-cold 0%, Theme.heat-cool 25%, Theme.heat-neutral 50%, Theme.heat-warm 75%, Theme.heat-hot 100%);
+            }
+
+            Text { text: "HOT (Rich)"; font-size: 9px; color: Theme.danger-red; vertical-alignment: center; }
+        }
+    }
+}

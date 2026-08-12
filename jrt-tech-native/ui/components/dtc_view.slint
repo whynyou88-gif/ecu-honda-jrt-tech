@@ -1,0 +1,190 @@
+// ============================================================
+// dtc_view.slint — Diagnostic Trouble Code (DTC) Reader
+// ============================================================
+
+import { Theme } from "../theme.slint";
+
+export component DtcView inherits Rectangle {
+    in property <int> dtc-count: 0;
+    in property <bool> mil-on: false;
+    in property <string> dtc-code-1: "12-01";
+    in property <string> dtc-desc-1: "Primary Injector Circuit Malfunction / Open Circuit";
+    in property <string> dtc-code-2: "07-02";
+    in property <string> dtc-desc-2: "ECT Sensor (Engine Coolant Temp) Circuit High Voltage";
+
+    callback read-dtc-clicked();
+    callback clear-dtc-clicked();
+
+    background: Theme.bg-card;
+    border-radius: Theme.corner-radius;
+    border-width: 1px;
+    border-color: Theme.border-color;
+
+    VerticalLayout {
+        padding: 16px;
+        spacing: 16px;
+
+        // Diagnostic Action Header Bar
+        HorizontalLayout {
+            spacing: 12px;
+            alignment: center;
+
+            Text {
+                text: "ECU Diagnostic Trouble Codes (DTC)";
+                font-size: 16px;
+                font-weight: 800;
+                color: Theme.text-primary;
+                vertical-alignment: center;
+            }
+
+            Rectangle { horizontal-stretch: 1; }
+
+            // MIL Lamp Indicator Status
+            Rectangle {
+                height: 30px;
+                background: root.mil-on ? Theme.danger-red : Theme.bg-secondary;
+                border-radius: 15px;
+                padding-left: 12px;
+                padding-right: 12px;
+
+                Text {
+                    text: root.mil-on ? "⚠️ MIL LAMP ON (CHECK ENGINE)" : "✓ MIL LAMP OFF (OK)";
+                    font-size: 11px;
+                    font-weight: 800;
+                    color: root.mil-on ? #FFFFFF : Theme.success-green;
+                    vertical-alignment: center;
+                }
+            }
+
+            // Read DTC Button
+            Rectangle {
+                width: 110px; height: 32px;
+                background: btn-read.has-hover ? Theme.accent-dark : Theme.accent-orange;
+                border-radius: Theme.corner-radius-sm;
+
+                btn-read := TouchArea {
+                    clicked => { root.read-dtc-clicked(); }
+                }
+
+                Text {
+                    text: "🔍 Scan DTC";
+                    font-size: 11px;
+                    font-weight: 700;
+                    color: #FFFFFF;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+
+            // Clear DTC Button
+            Rectangle {
+                width: 110px; height: 32px;
+                background: btn-clear.has-hover ? #B71C1C : Theme.accent-red;
+                border-radius: Theme.corner-radius-sm;
+
+                btn-clear := TouchArea {
+                    clicked => { root.clear-dtc-clicked(); }
+                }
+
+                Text {
+                    text: "🗑 Clear DTC";
+                    font-size: 11px;
+                    font-weight: 700;
+                    color: #FFFFFF;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+        }
+
+        // DTC Results Table Container
+        Rectangle {
+            background: Theme.bg-primary;
+            border-radius: Theme.corner-radius-sm;
+            vertical-stretch: 1;
+
+            VerticalLayout {
+                padding: 12px;
+                spacing: 8px;
+
+                // Table Header
+                Rectangle {
+                    height: 28px;
+                    background: Theme.bg-secondary;
+
+                    HorizontalLayout {
+                        padding-left: 12px; padding-right: 12px;
+                        spacing: 12px;
+
+                        Text { text: "CODE"; font-size: 11px; font-weight: 700; color: Theme.text-muted; width: 80px; vertical-alignment: center; }
+                        Text { text: "FAULT DESCRIPTION"; font-size: 11px; font-weight: 700; color: Theme.text-muted; horizontal-stretch: 1; vertical-alignment: center; }
+                        Text { text: "STATUS"; font-size: 11px; font-weight: 700; color: Theme.text-muted; width: 100px; vertical-alignment: center; }
+                    }
+                }
+
+                if root.dtc-count == 0 : Rectangle {
+                    vertical-stretch: 1;
+                    Text {
+                        text: "✓ No DTC Fault Codes Detected. System Operating Normally.";
+                        font-size: 13px;
+                        font-weight: 700;
+                        color: Theme.success-green;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                }
+
+                if root.dtc-count > 0 : VerticalLayout {
+                    spacing: 6px;
+
+                    // Code Item 1
+                    Rectangle {
+                        height: 40px;
+                        background: Theme.bg-card;
+                        border-radius: 4px;
+                        border-width: 1px;
+                        border-color: Theme.accent-red;
+
+                        HorizontalLayout {
+                            padding-left: 12px; padding-right: 12px;
+                            spacing: 12px;
+
+                            Text { text: root.dtc-code-1; font-size: 13px; font-weight: 800; color: Theme.danger-red; width: 80px; vertical-alignment: center; }
+                            Text { text: root.dtc-desc-1; font-size: 12px; font-weight: 600; color: Theme.text-primary; horizontal-stretch: 1; vertical-alignment: center; }
+                            
+                            Rectangle {
+                                width: 90px; height: 22px;
+                                background: Theme.danger-red;
+                                border-radius: 11px;
+
+                                Text { text: "ACTIVE"; font-size: 10px; font-weight: 800; color: #FFFFFF; horizontal-alignment: center; vertical-alignment: center; }
+                            }
+                        }
+                    }
+
+                    if root.dtc-count > 1 : Rectangle {
+                        height: 40px;
+                        background: Theme.bg-card;
+                        border-radius: 4px;
+
+                        HorizontalLayout {
+                            padding-left: 12px; padding-right: 12px;
+                            spacing: 12px;
+
+                            Text { text: root.dtc-code-2; font-size: 13px; font-weight: 800; color: Theme.warning-yellow; width: 80px; vertical-alignment: center; }
+                            Text { text: root.dtc-desc-2; font-size: 12px; font-weight: 600; color: Theme.text-primary; horizontal-stretch: 1; vertical-alignment: center; }
+                            
+                            Rectangle {
+                                width: 90px; height: 22px;
+                                background: Theme.warning-yellow;
+                                border-radius: 11px;
+
+                                Text { text: "HISTORY"; font-size: 10px; font-weight: 800; color: #000000; horizontal-alignment: center; vertical-alignment: center; }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

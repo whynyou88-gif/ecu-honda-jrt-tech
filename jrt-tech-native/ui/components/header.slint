@@ -1,0 +1,129 @@
+// ============================================================
+// header.slint — Header Bar & Toolbar Component
+// ============================================================
+
+import { Theme } from "../theme.slint";
+
+export component Header inherits Rectangle {
+    in property <string> title: "Dashboard";
+    in property <bool> is-connected: false;
+    in property <bool> is-simulation: false;
+    in property <string> selected-port: "Auto-Detect FTDI";
+    in property <float> battery-voltage: 0.0;
+    
+    callback connect-clicked();
+    callback disconnect-clicked();
+    callback sim-connect-clicked();
+
+    height: Theme.header-height;
+    background: Theme.bg-secondary;
+
+    // Bottom border accent
+    Rectangle {
+        x: 0; y: parent.height - 2px;
+        width: parent.width; height: 2px;
+        background: Theme.accent-orange;
+    }
+
+    HorizontalLayout {
+        padding-left: 16px;
+        padding-right: 16px;
+        spacing: 12px;
+        alignment: center;
+
+        Text {
+            text: root.title;
+            font-size: 16px;
+            font-weight: 700;
+            color: Theme.text-primary;
+            vertical-alignment: center;
+        }
+
+        Rectangle { horizontal-stretch: 1; } // Spacer
+
+        // Connection Status Badge
+        Rectangle {
+            height: 26px;
+            background: root.is-connected ? (root.is-simulation ? Theme.warning-yellow : Theme.success-green) : Theme.bg-card;
+            border-radius: 13px;
+            padding-left: 10px;
+            padding-right: 10px;
+
+            HorizontalLayout {
+                spacing: 6px;
+                alignment: center;
+
+                Rectangle {
+                    width: 8px; height: 8px;
+                    border-radius: 4px;
+                    background: root.is-connected ? (root.is-simulation ? #000000 : #000000) : Theme.text-muted;
+                }
+
+                Text {
+                    text: root.is-connected ? (root.is-simulation ? "SIMULATION MODE" : "ECU CONNECTED") : "DISCONNECTED";
+                    font-size: 10px;
+                    font-weight: 800;
+                    color: root.is-connected ? #000000 : Theme.text-muted;
+                    vertical-alignment: center;
+                }
+            }
+        }
+
+        // Battery Voltage Meter
+        if root.is-connected : Rectangle {
+            height: 26px;
+            background: Theme.bg-card;
+            border-radius: 4px;
+            padding-left: 8px;
+            padding-right: 8px;
+
+            Text {
+                text: "🔋 " + Math.round(root.battery-voltage * 10) / 10 + "V";
+                font-size: 11px;
+                font-weight: 700;
+                color: root.battery-voltage >= 11.5 ? Theme.success-green : Theme.danger-red;
+                vertical-alignment: center;
+            }
+        }
+
+        // Connect Button
+        if !root.is-connected : Rectangle {
+            width: 120px; height: 30px;
+            background: touch-conn.has-hover ? Theme.accent-dark : Theme.accent-orange;
+            border-radius: Theme.corner-radius-sm;
+
+            touch-conn := TouchArea {
+                clicked => { root.connect-clicked(); }
+            }
+
+            Text {
+                text: "🔌 Connect ECU";
+                font-size: 11px;
+                font-weight: 700;
+                color: #FFFFFF;
+                horizontal-alignment: center;
+                vertical-alignment: center;
+            }
+        }
+
+        // Disconnect Button
+        if root.is-connected : Rectangle {
+            width: 90px; height: 30px;
+            background: touch-disc.has-hover ? #B71C1C : Theme.accent-red;
+            border-radius: Theme.corner-radius-sm;
+
+            touch-disc := TouchArea {
+                clicked => { root.disconnect-clicked(); }
+            }
+
+            Text {
+                text: "⏹ Disconnect";
+                font-size: 11px;
+                font-weight: 700;
+                color: #FFFFFF;
+                horizontal-alignment: center;
+                vertical-alignment: center;
+            }
+        }
+    }
+}

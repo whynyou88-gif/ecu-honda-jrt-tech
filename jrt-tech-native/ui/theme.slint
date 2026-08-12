@@ -1,0 +1,43 @@
+// ============================================================
+// theme.slint — JRT Tech Carbon Cockpit Theme Tokens
+// Matches exact hex values from original Python application
+// ============================================================
+
+export global Theme {
+    // Background Colors
+    out property <color> bg-primary: #08080A;      // Carbon Dark Base
+    out property <color> bg-secondary: #0F1013;    // Sidebar & Header Base
+    out property <color> bg-card: #15161D;         // Card & Panel Background
+    out property <color> bg-glass: #1A1C26;        // Highlighted Container
+    out property <color> border-color: #2D1A15;    // Subdued Border Accent
+
+    // Racing Accent Colors
+    out property <color> accent-orange: #FF5722;   // Racing Orange Accent
+    out property <color> accent-dark: #E64A19;     // Dark Accent
+    out property <color> accent-red: #D32F2F;      // Racing Red Accent
+    out property <color> accent-glow: #2A1712;     // Glow Accent Background
+
+    // Status Indicator Colors
+    out property <color> success-green: #47FF7A;   // Connected / Passed
+    out property <color> warning-yellow: #FFD400;  // Pending / Warning
+    out property <color> danger-red: #FF3D3D;      // Error / Fault / MIL
+    out property <color> info-cyan: #00E5FF;       // Data / Information
+
+    // Typography Colors
+    out property <color> text-primary: #FFFFFF;    // Primary Text
+    out property <color> text-secondary: #B0B0B8;  // Secondary Text
+    out property <color> text-muted: #686872;      // Muted / Subtitle Text
+
+    // Heatmap Interpolation Color Palette (Map Editor Grid)
+    out property <color> heat-cold: #00E5FF;       // Min / Low Value (Cyan)
+    out property <color> heat-cool: #47FF7A;       // Low-Medium Value (Green)
+    out property <color> heat-neutral: #FFD400;    // Medium Value (Yellow)
+    out property <color> heat-warm: #FF9800;       // Medium-High Value (Orange)
+    out property <color> heat-hot: #FF3D3D;        // Max / Peak Value (Red)
+
+    // Component Dimensions
+    out property <length> sidebar-width: 170px;
+    out property <length> header-height: 54px;
+    out property <length> corner-radius: 8px;
+    out property <length> corner-radius-sm: 4px;
+}

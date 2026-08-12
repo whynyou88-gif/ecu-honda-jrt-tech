@@ -13,8 +13,11 @@ build/
 *.zip
 .DS_Store
 
-# Tauri & Node
+# Tauri, Slint & Cargo target dirs
+target/
+**/target/
 node_modules/
 jrt-tech-tauri/src-tauri/target/
+jrt-tech-native/target/
 jrt-tech-tauri/node_modules/
 jrt-tech-tauri/dist/

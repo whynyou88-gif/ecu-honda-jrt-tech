@@ -1,0 +1,258 @@
+// ============================================================
+// motorsport_dash.slint — MoTeC C127 / Haltech iC-7 Motorsport Cluster
+// Real-time Gauge Cluster View
+// ============================================================
+
+import { Theme } from "../theme.slint";
+
+export component MeterCard inherits Rectangle {
+    in property <string> title: "PARAMETER";
+    in property <string> value-text: "0.0";
+    in property <string> unit-text: "";
+    in property <color> value-color: Theme.text-primary;
+    in property <float> progress: 0.5; // 0.0 to 1.0
+
+    background: Theme.bg-card;
+    border-radius: Theme.corner-radius;
+    border-width: 1px;
+    border-color: Theme.border-color;
+
+    VerticalLayout {
+        padding: 10px;
+        spacing: 6px;
+
+        Text {
+            text: root.title;
+            font-size: 10px;
+            font-weight: 700;
+            color: Theme.text-muted;
+        }
+
+        HorizontalLayout {
+            alignment: start;
+            spacing: 4px;
+
+            Text {
+                text: root.value-text;
+                font-size: 24px;
+                font-weight: 900;
+                color: root.value-color;
+                vertical-alignment: bottom;
+            }
+
+            Text {
+                text: root.unit-text;
+                font-size: 11px;
+                font-weight: 600;
+                color: Theme.text-secondary;
+                vertical-alignment: bottom;
+                padding-bottom: 3px;
+            }
+        }
+
+        // Progress Bar Indicator
+        Rectangle {
+            height: 4px;
+            background: Theme.bg-primary;
+            border-radius: 2px;
+
+            Rectangle {
+                x: 0;
+                width: parent.width * Math.max(0.0, Math.min(1.0, root.progress));
+                height: parent.height;
+                background: root.value-color;
+                border-radius: 2px;
+            }
+        }
+    }
+}
+
+export component MotorsportDash inherits Rectangle {
+    in property <int> rpm: 1500;
+    in property <float> tps: 0.0;
+    in property <float> map-val: 101.3;
+    in property <float> ect: 85.0;
+    in property <float> iat: 32.0;
+    in property <float> vbat: 12.6;
+    in property <float> inj-pw: 2.5;
+    in property <float> ign-timing: 15.0;
+    in property <int> speed: 0;
+
+    background: Theme.bg-primary;
+
+    VerticalLayout {
+        padding: 12px;
+        spacing: 12px;
+
+        // Rev Shift Light Strip
+        Rectangle {
+            height: 12px;
+            background: Theme.bg-card;
+            border-radius: 6px;
+
+            HorizontalLayout {
+                padding: 2px;
+                spacing: 4px;
+
+                for i in 12 : Rectangle {
+                    border-radius: 4px;
+                    background: (root.rpm > (4000 + i * 500)) ? (
+                        i < 6 ? Theme.success-green : (i < 9 ? Theme.warning-yellow : Theme.danger-red)
+                    ) : Theme.bg-secondary;
+                    horizontal-stretch: 1;
+                }
+            }
+        }
+
+        // Central Main Gauge Row (RPM & SPEED)
+        HorizontalLayout {
+            spacing: 12px;
+
+            // Main Digital RPM Display Card
+            Rectangle {
+                background: Theme.bg-card;
+                border-radius: Theme.corner-radius;
+                border-width: 2px;
+                border-color: Theme.accent-orange;
+                horizontal-stretch: 2;
+                height: 140px;
+
+                VerticalLayout {
+                    padding: 14px;
+                    alignment: center;
+                    spacing: 4px;
+
+                    Text {
+                        text: "ENGINE RPM";
+                        font-size: 12px;
+                        font-weight: 800;
+                        color: Theme.accent-orange;
+                        horizontal-alignment: center;
+                    }
+
+                    Text {
+                        text: root.rpm;
+                        font-size: 52px;
+                        font-weight: 900;
+                        color: Theme.text-primary;
+                        horizontal-alignment: center;
+                    }
+
+                    // Analog RPM Bar
+                    Rectangle {
+                        height: 8px;
+                        background: Theme.bg-primary;
+                        border-radius: 4px;
+
+                        Rectangle {
+                            x: 0;
+                            width: parent.width * Math.min(1.0, root.rpm / 12000.0);
+                            height: parent.height;
+                            background: @linear-gradient(90deg, Theme.info-cyan 0%, Theme.success-green 50%, Theme.warning-yellow 80%, Theme.danger-red 100%);
+                            border-radius: 4px;
+                        }
+                    }
+                }
+            }
+
+            // Main Digital Speed Card
+            Rectangle {
+                background: Theme.bg-card;
+                border-radius: Theme.corner-radius;
+                border-width: 1px;
+                border-color: Theme.border-color;
+                horizontal-stretch: 1;
+                height: 140px;
+
+                VerticalLayout {
+                    padding: 14px;
+                    alignment: center;
+                    spacing: 4px;
+
+                    Text {
+                        text: "SPEED";
+                        font-size: 12px;
+                        font-weight: 800;
+                        color: Theme.text-muted;
+                        horizontal-alignment: center;
+                    }
+
+                    Text {
+                        text: root.speed;
+                        font-size: 48px;
+                        font-weight: 900;
+                        color: Theme.info-cyan;
+                        horizontal-alignment: center;
+                    }
+
+                    Text {
+                        text: "KM/H";
+                        font-size: 11px;
+                        font-weight: 700;
+                        color: Theme.text-secondary;
+                        horizontal-alignment: center;
+                    }
+                }
+            }
+        }
+
+        // Secondary Telemetry Meters Grid (2x3 Grid)
+        GridLayout {
+            spacing: 12px;
+
+            MeterCard {
+                row: 0; col: 0;
+                title: "THROTTLE (TPS)";
+                value-text: Math.round(root.tps * 10) / 10;
+                unit-text: "%";
+                value-color: Theme.success-green;
+                progress: root.tps / 100.0;
+            }
+
+            MeterCard {
+                row: 0; col: 1;
+                title: "COOLANT TEMP (ECT)";
+                value-text: Math.round(root.ect * 10) / 10;
+                unit-text: "°C";
+                value-color: root.ect > 105.0 ? Theme.danger-red : Theme.info-cyan;
+                progress: Math.min(1.0, root.ect / 130.0);
+            }
+
+            MeterCard {
+                row: 0; col: 2;
+                title: "INTAKE TEMP (IAT)";
+                value-text: Math.round(root.iat * 10) / 10;
+                unit-text: "°C";
+                value-color: Theme.warning-yellow;
+                progress: Math.min(1.0, root.iat / 80.0);
+            }
+
+            MeterCard {
+                row: 1; col: 0;
+                title: "MAP PRESSURE";
+                value-text: Math.round(root.map-val * 10) / 10;
+                unit-text: "kPa";
+                value-color: Theme.info-cyan;
+                progress: Math.min(1.0, root.map-val / 120.0);
+            }
+
+            MeterCard {
+                row: 1; col: 1;
+                title: "BATTERY VOLTAGE";
+                value-text: Math.round(root.vbat * 10) / 10;
+                unit-text: "V";
+                value-color: root.vbat >= 11.5 ? Theme.success-green : Theme.danger-red;
+                progress: Math.min(1.0, root.vbat / 16.0);
+            }
+
+            MeterCard {
+                row: 1; col: 2;
+                title: "IGNITION TIMING";
+                value-text: Math.round(root.ign-timing * 10) / 10;
+                unit-text: "°BTDC";
+                value-color: Theme.accent-orange;
+                progress: Math.min(1.0, (root.ign-timing + 10.0) / 50.0);
+            }
+        }
+    }
+}
