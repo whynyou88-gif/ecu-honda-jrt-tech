@@ -57,7 +57,7 @@ jobs:
         shell: cmd
         run: |
           cd jrt-tech-native
-          "C:\Program Files (x86)\NSIS\makensis.exe" installer.nsi || makensis installer.nsi
+          "C:\Program Files (x86)\NSIS\makensis.exe" installer.nsi
 
       - name: Create macOS DMG Installer
         if: matrix.platform == 'macos-latest'
