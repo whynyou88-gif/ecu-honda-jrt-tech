@@ -48,16 +48,12 @@ jobs:
           cd jrt-tech-native
           cargo build --release --target ${{ matrix.target }}
 
-      - name: Install NSIS via Chocolatey (Windows)
-        if: matrix.platform == 'windows-latest'
-        run: choco install nsis -y
-
-      - name: Create Windows Setup Installer (NSIS)
+      - name: Create Professional Windows Setup Installer (Inno Setup)
         if: matrix.platform == 'windows-latest'
         shell: cmd
         run: |
           cd jrt-tech-native
-          "C:\Program Files (x86)\NSIS\makensis.exe" installer.nsi
+          "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
 
       - name: Create macOS DMG Installer
         if: matrix.platform == 'macos-latest'
@@ -81,7 +77,7 @@ jobs:
           files: ${{ matrix.out-name }}
           tag_name: ${{ github.ref_name }}
           name: 'JRT Tech ANALIST Pro ${{ github.ref_name }}'
-          body: 'Automated release build containing Pure Native Slint Setup Installer (Windows .exe Setup & macOS .dmg).'
+          body: 'Automated release build containing Pure Native Slint Professional Setup Installer (Windows Inno Setup .exe & macOS .dmg).'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

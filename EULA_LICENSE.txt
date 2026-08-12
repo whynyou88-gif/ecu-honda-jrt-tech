@@ -1,0 +1,32 @@
+===============================================================================
+                       JRT TECH ANALIST PRO 3.4
+             HONDA ECU REMAP & DIAGNOSTIC STUDIO (PURE NATIVE)
+                     END-USER LICENSE & SAFETY AGREEMENT
+===============================================================================
+
+1. DEFINITION & PRODUCT USE
+   JRT Tech ANALIST Pro is a high-performance, professional native desktop application 
+   designed for Honda Matic & Sport motorcycle Engine Control Unit (ECU) diagnostic logging, 
+   DTC fault clearance, and K-Line EEPROM/Flash remapping.
+
+2. SAFETY GUARD & ECU PROTECTION
+   - Prior to initializing any Flash Read or Write session, ensure the vehicle's 
+     battery voltage (Vbat) is equal to or exceeds 11.5 Volts.
+   - Do NOT disconnect the USB FTDI interface cable or switch off the main ignition key 
+     during an active 5-phase Flash Programming sequence.
+   - The application automatically creates a synchronous byte-for-byte binary 
+     backup of your ECU contents prior to applying any flash modifications.
+
+3. HARDWARE & K-LINE INTERFACE REQUIREMENTS
+   - Standard 5V FTDI FT232RL / FT232H / Prolific USB-to-Serial K-Line Adapter.
+   - Baud Rate: 10,400 bps (8-N-1).
+
+4. DISCLAIMER & RESPONSIBILITY
+   Remapping fuel, ignition timing, or engine RPM limits alters vehicle operating 
+   parameters. JRT Tech Studio provides automated safety verification guards to 
+   protect your physical ECU hardware, but tuning values applied to the engine 
+   remain the sole responsibility of the user/technician.
+
+===============================================================================
+                 Copyright (C) 2026 JRT Tech Studio. All Rights Reserved.
+===============================================================================
