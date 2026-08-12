@@ -1,9 +1,7 @@
-name: JRT Tech ANALIST Pro - Setup Installer Release Pipeline
+name: JRT Tech ANALIST Pro - PyInstaller + Inno Setup Release
 
 on:
   push:
-    branches:
-      - main
     tags:
       - 'v*'
   workflow_dispatch:
@@ -12,22 +10,102 @@ permissions:
   contents: write
 
 jobs:
-  build-admin-keygen:
-    name: Build Admin Keygen Studio (${{ matrix.platform }})
-    permissions:
-      contents: write
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: 'windows-latest'
-            target: 'x86_64-pc-windows-msvc'
-            out-keygen: 'JRT_Tech_Admin_Keygen_Studio.exe'
-          - platform: 'macos-latest'
-            target: 'aarch64-apple-darwin'
-            out-keygen: 'JRT_Tech_Admin_Keygen_Studio_macOS'
+  build-windows-installer:
+    name: Build Windows Installer (PyInstaller Onedir + Inno Setup)
+    runs-on: windows-latest
 
-    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller pywebview aiohttp pyserial pylibftdi pythonnet bottle
+
+      - name: Build with PyInstaller (Onedir)
+        run: |
+          echo "::group::PyInstaller Build"
+          pyinstaller analist_pro.spec --clean --noconfirm
+          echo "::endgroup::"
+
+      - name: Verify Build Output
+        shell: pwsh
+        run: |
+          $exePath = "dist\JRT Tech ANALIST Pro\JRT Tech ANALIST Pro.exe"
+          if (Test-Path $exePath) {
+            $exeSize = (Get-Item $exePath).Length / 1MB
+            $totalSize = (Get-ChildItem "dist\JRT Tech ANALIST Pro" -Recurse | Measure-Object -Property Length -Sum).Sum / 1MB
+            Write-Host "✅ EXE found: $exePath"
+            Write-Host "   EXE size: $([math]::Round($exeSize, 1)) MB"
+            Write-Host "   Total folder size: $([math]::Round($totalSize, 1)) MB"
+          } else {
+            Write-Error "❌ EXE not found at $exePath"
+            exit 1
+          }
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress
+
+      - name: Build Installer with Inno Setup
+        shell: pwsh
+        run: |
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
+          $setupFile = Get-ChildItem "Output\*.exe" | Select-Object -First 1
+          if ($setupFile) {
+            $setupSize = $setupFile.Length / 1MB
+            Write-Host "✅ Installer built: $($setupFile.Name)"
+            Write-Host "   Installer size: $([math]::Round($setupSize, 1)) MB"
+          } else {
+            Write-Error "❌ Installer not found in Output/"
+            exit 1
+          }
+
+      - name: Upload Setup Installer Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: JRT_Tech_ANALIST_Pro_v3.4_Setup
+          path: Output/JRT_Tech_ANALIST_Pro_v3.4_Setup.exe
+
+      - name: Create GitHub Release (on Tag push)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            Output/JRT_Tech_ANALIST_Pro_v3.4_Setup.exe
+          tag_name: ${{ github.ref_name }}
+          name: 'JRT Tech ANALIST Pro ${{ github.ref_name }}'
+          body: |
+            ## JRT Tech ANALIST Pro ${{ github.ref_name }}
+
+            Honda ECU Remap & Diagnostic Studio — Windows Setup Installer
+
+            ### Installation
+            1. Download `JRT_Tech_ANALIST_Pro_v3.4_Setup.exe`
+            2. Run installer — no admin required (installs to user folder)
+            3. Application launches automatically after installation
+
+            ### Features
+            - K-Line ECU Diagnostic & DTC Reader
+            - Flash Read/Write with automatic backup
+            - Real-time Live Data monitoring
+            - Multi-brand support (Honda, Kawasaki, Suzuki, Yamaha)
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-admin-keygen:
+    name: Build Admin Keygen Studio (Windows)
+    runs-on: windows-latest
 
     steps:
       - name: Checkout Repository
@@ -35,8 +113,6 @@ jobs:
 
       - name: Install Rust Toolchain
         uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ matrix.target }}
 
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
@@ -46,102 +122,19 @@ jobs:
       - name: Build Admin Keygen Binary
         run: |
           cd jrt-tech-native
-          cargo build --release --target ${{ matrix.target }} --bin jrt-keygen-gui
-
-      - name: Prepare Keygen Artifact
-        shell: bash
-        run: |
-          if [ "${{ matrix.platform }}" = "windows-latest" ]; then
-            cp jrt-tech-native/target/${{ matrix.target }}/release/jrt-keygen-gui.exe ./${{ matrix.out-keygen }}
-          else
-            cp jrt-tech-native/target/${{ matrix.target }}/release/jrt-keygen-gui ./${{ matrix.out-keygen }}
-          fi
+          cargo build --release --bin jrt-keygen-gui
 
       - name: Upload Admin Keygen Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.out-keygen }}
-          path: ${{ matrix.out-keygen }}
+          name: JRT_Tech_Admin_Keygen_Studio
+          path: jrt-tech-native/target/release/jrt-keygen-gui.exe
 
       - name: Upload Keygen Release Asset (on Tag push)
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: ${{ matrix.out-keygen }}
-          tag_name: ${{ github.ref_name }}
-          name: 'JRT Tech ANALIST Pro ${{ github.ref_name }}'
-          body: 'Official 100% exact release build for JRT Tech ANALIST Pro.'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build-main-setup-installer:
-    name: Build Setup Wizard Installer (${{ matrix.platform }})
-    permissions:
-      contents: write
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: 'windows-latest'
-            args: ''
-            target: 'x86_64-pc-windows-msvc'
-            out-setup: 'JRT_Tech_ANALIST_Pro_v3.4.0_Windows_Setup.exe'
-          - platform: 'macos-latest'
-            args: '--target universal-apple-darwin'
-            target: 'universal-apple-darwin'
-            out-setup: 'JRT_Tech_ANALIST_Pro_v3.4.0_macOS.dmg'
-
-    runs-on: ${{ matrix.platform }}
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-          cache-dependency-path: 'jrt-tech-tauri/package-lock.json'
-
-      - name: Install Rust Toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || matrix.target }}
-
-      - name: Rust Cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: 'jrt-tech-tauri/src-tauri -> target'
-
-      - name: Install Frontend Dependencies
-        run: |
-          cd jrt-tech-tauri
-          npm install
-
-      - name: Build Setup Wizard Installer & Release
-        uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          projectPath: 'jrt-tech-tauri'
-          tagName: ${{ github.ref_name }}
-          releaseName: 'JRT Tech ANALIST Pro ${{ github.ref_name }}'
-          releaseBody: 'Official release build containing 100% exact original UI, NSIS Setup Wizard Installer, and fast Rust backend.'
-          releaseDraft: false
-          prerelease: false
-          args: ${{ matrix.args }}
-
-      - name: Rename & Upload Main Setup Installer (on Tag push)
-        if: startsWith(github.ref, 'refs/tags/v')
         shell: bash
         run: |
-          if [ "${{ matrix.platform }}" = "windows-latest" ]; then
-            SETUP_FILE=$(find jrt-tech-tauri/src-tauri/target/release/bundle/nsis -name "*.exe" | head -n 1)
-            if [ -n "$SETUP_FILE" ]; then
-              cp "$SETUP_FILE" ./${{ matrix.out-setup }}
-              gh release upload ${{ github.ref_name }} ./${{ matrix.out-setup }} --clobber
-            fi
-          fi
+          cp jrt-tech-native/target/release/jrt-keygen-gui.exe ./JRT_Tech_Admin_Keygen_Studio.exe
+          gh release upload ${{ github.ref_name }} ./JRT_Tech_Admin_Keygen_Studio.exe --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
