@@ -13,7 +13,7 @@ use std::time::Duration;
 use tauri::{Emitter, Manager};
 
 fn main() {
-    env_logger::init();
+    let _ = env_logger::try_init();
     log::info!("Starting JRT Tech ANALIST Pro Tauri App...");
 
     tauri::Builder::default()
