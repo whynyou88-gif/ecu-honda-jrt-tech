@@ -48,6 +48,10 @@ jobs:
           cd jrt-tech-native
           cargo build --release --target ${{ matrix.target }}
 
+      - name: Setup NSIS (Windows)
+        if: matrix.platform == 'windows-latest'
+        uses: joncloud/action-setup-nsis@v1
+
       - name: Create Windows Setup Installer (NSIS)
         if: matrix.platform == 'windows-latest'
         shell: cmd
