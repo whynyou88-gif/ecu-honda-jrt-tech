@@ -1,5 +1,5 @@
 // ============================================================
-// api.js - REST API Client + WebSocket Manager
+// api.js - REST API Client + WebSocket Manager & Tauri IPC Bridge
 // ============================================================
 
 const API = (() => {
@@ -9,17 +9,66 @@ const API = (() => {
   let _wsReconnectTimer = null;
   let _wsConnected = false;
 
+  function safeTauriInvoke(cmd, args) {
+    try {
+      if (window.__TAURI__ && window.__TAURI__.core && typeof window.__TAURI__.core.invoke === 'function') {
+        return window.__TAURI__.core.invoke(cmd, args);
+      } else if (window.__TAURI_INTERNALS__ && typeof window.__TAURI_INTERNALS__.invoke === 'function') {
+        return window.__TAURI_INTERNALS__.invoke(cmd, args);
+      }
+    } catch(e) {
+      console.warn("[Tauri IPC invoke catch]:", e);
+    }
+    return null;
+  }
+
+  function isTauriEnv() {
+    return !!(window.__TAURI__ || window.__TAURI_INTERNALS__);
+  }
+
+  async function _tauriBridge(path, body) {
+    if (!isTauriEnv()) return null;
+
+    if (path.includes('/api/status') || path.includes('/api/live')) return safeTauriInvoke('get_status');
+    if (path.includes('/api/info')) return safeTauriInvoke('get_info');
+    if (path.includes('/api/ports')) return safeTauriInvoke('get_ports');
+    if (path.includes('/api/connect')) return safeTauriInvoke('connect_ecu', { port: (body && body.port) ? body.port : null });
+    if (path.includes('/api/disconnect')) return safeTauriInvoke('disconnect_ecu');
+    if (path.includes('/api/sim/connect')) return safeTauriInvoke('sim_connect');
+    if (path.includes('/api/sim/disconnect')) return safeTauriInvoke('sim_disconnect');
+    if (path.includes('/api/read-dtc') || path.includes('/api/dtc')) return safeTauriInvoke('read_dtc');
+    if (path.includes('/api/clear-dtc')) return safeTauriInvoke('clear_dtc');
+    if (path.includes('/api/flash/read')) return safeTauriInvoke('start_flash_read', body || {});
+    if (path.includes('/api/flash/write')) return safeTauriInvoke('start_flash_write', body || {});
+    
+    return null;
+  }
+
   // ---- HTTP helpers ----
   async function _req(method, path, body = null) {
-    // Robust check for swapped arguments (e.g. if path is passed first)
+    // Robust check for swapped arguments
     if (method && (method.startsWith('/') || method.startsWith('http'))) {
       const temp = method;
       method = path || 'GET';
       path = temp;
     }
-    // Set fallback method
     if (!method) method = 'GET';
+
+    // 1. Try Tauri IPC Native Bridge first if inside Tauri
+    if (isTauriEnv()) {
+      const tauriPromise = _tauriBridge(path, body);
+      if (tauriPromise !== null) {
+        try {
+          const res = await tauriPromise;
+          if (res !== null && res !== undefined) return res;
+        } catch (err) {
+          console.warn(`[Tauri IPC Error ${path}]:`, err);
+          throw err;
+        }
+      }
+    }
     
+    // 2. Fallback to HTTP Fetch for Python / Server mode
     const opts = {
       method: method.toUpperCase(),
       headers: { 'Content-Type': 'application/json' },
@@ -33,7 +82,7 @@ const API = (() => {
         json = JSON.parse(text);
       } catch (parseErr) {
         if (!r.ok) throw new Error(text || `HTTP ${r.status}`);
-        throw new Error(`Modul FTDI/K-Line belum terdeteksi. Silakan colokkan kabel FTDI ke USB Mac.`);
+        throw new Error(`Modul FTDI/K-Line belum terdeteksi. Silakan colokkan kabel FTDI ke USB.`);
       }
       if (!r.ok) throw new Error((json && json.error) ? json.error : `HTTP ${r.status}`);
       return json;
@@ -106,11 +155,38 @@ const API = (() => {
     a.click();
   }
 
-  // ---- WebSocket ----
+  // ---- WebSocket & Tauri Telemetry Stream ----
   function wsConnect() {
+    if (isTauriEnv()) {
+      _wsConnected = true;
+      console.log('[Tauri IPC] Active telemetry listener attached');
+      const listenFn = (window.__TAURI__ && window.__TAURI__.event) ? window.__TAURI__.event.listen : (window.__TAURI_INTERNALS__ ? window.__TAURI_INTERNALS__.listen : null);
+      if (listenFn) {
+        listenFn('live-telemetry', (event) => {
+          const telemetryData = event.payload || event;
+          const msg = { type: 'telemetry', data: telemetryData };
+          if (_wsHandlers['telemetry']) {
+            _wsHandlers['telemetry'].forEach(h => { try { h(msg); } catch {} });
+          }
+          if (_wsHandlers['live']) {
+            _wsHandlers['live'].forEach(h => { try { h(msg); } catch {} });
+          }
+          if (_wsHandlers.message) {
+            _wsHandlers.message.forEach(h => { try { h(msg); } catch {} });
+          }
+        });
+      }
+      return;
+    }
+
     const host = (location.protocol === 'file:' || !location.host) ? 'localhost:8080' : location.host;
     const url = `ws://${host}/ws`;
-    _ws = new WebSocket(url);
+    try {
+      _ws = new WebSocket(url);
+    } catch(e) {
+      console.warn('[WS] WebSocket init failed:', e);
+      return;
+    }
 
     _ws.onopen = () => {
       _wsConnected = true;
