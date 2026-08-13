@@ -3177,12 +3177,24 @@ async def api_reset_ecu(request):
         ecu.send_command([0x72], [0x00, 0x00], retries=2)
         log_event("[ECU] Soft Reset ECU executed.")
         return web.json_response({"status": "ok", "message": "ECU Soft Reset executed successfully"})
-    except Exception as e:
-        return web.json_response({"status": "error", "message": str(e)}, status=500)
+import platform
+import uuid
+import hashlib
+
+async def api_hwid(request):
+    try:
+        raw_str = f"{platform.node()}-{platform.machine()}-{platform.processor()}-{uuid.getnode()}"
+        sha = hashlib.sha256(raw_str.encode('utf-8')).hexdigest().upper()
+        hwid = f"JRT-{sha[0:4]}-{sha[4:8]}-{sha[8:12]}"
+    except Exception:
+        hwid = "JRT-884A-99F1-33BC"
+    return web.json_response({"status": "ok", "hwid": hwid})
+
 # Web server initialization
 app = web.Application()
 
 # Routes setup
+app.router.add_get('/api/hwid', api_hwid)
 app.router.add_get('/api/status', api_status)
 app.router.add_get('/api/info', api_info)
 app.router.add_get('/api/live', api_live)
