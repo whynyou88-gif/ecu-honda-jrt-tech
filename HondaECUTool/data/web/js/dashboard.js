@@ -156,20 +156,20 @@ const App = (() => {
     return saved;
   }
 
-  async function showActivationModal() {
+  function showActivationModal() {
     const modal = document.getElementById('modal-activation');
     const closeBtn = document.getElementById('btn-close-activation-modal');
     const hwidDisplay = document.getElementById('activation-hwid-display');
 
-    if (hwidDisplay) {
-      const hwid = await fetchOrGenerateHwid();
-      hwidDisplay.value = hwid;
-    }
     if (modal) {
       modal.style.setProperty('display', 'flex', 'important');
       modal.style.setProperty('z-index', '9999999', 'important');
     }
     if (closeBtn) closeBtn.style.display = isSoftwareActivated() ? 'block' : 'none';
+
+    fetchOrGenerateHwid().then(hwid => {
+      if (hwidDisplay) hwidDisplay.value = hwid;
+    });
   }
 
   function closeActivationModal() {
@@ -178,7 +178,7 @@ const App = (() => {
   }
 
   function computeHmacKey(hwidText) {
-    const cleanHwid = (hwidText || "JRT-884A-99F1-33BC").trim().toUpperCase();
+    const cleanHwid = (hwidText || "JRT-884A-99F1-33BC").replace(/[^A-Z0-9-]/gi, '').trim().toUpperCase();
     const hexStr = pureHmacSha256(MASTER_SECRET, cleanHwid);
     return `KEY-${hexStr.substring(0, 4)}-${hexStr.substring(4, 8)}-${hexStr.substring(8, 12)}-${hexStr.substring(12, 16)}`;
   }
@@ -210,7 +210,9 @@ const App = (() => {
 
     // Non-blocking initialization — run init() ONLY ONCE per page visit
     requestAnimationFrame(() => {
-      if (page === 'dyno') {
+      if (page === 'dashboard') {
+        drawTachoCanvas(typeof _lastRpm !== 'undefined' ? _lastRpm : 0, 12000);
+      } else if (page === 'dyno') {
         if (typeof DynoUI !== 'undefined') {
           if (!_initializedPages['dyno']) {
             _initializedPages['dyno'] = true;
@@ -227,7 +229,7 @@ const App = (() => {
           _initializedPages['flash'] = true;
           if (FlashUI.init) FlashUI.init();
         }
-      } else if (page === 'live-performance') {
+      } else if (page === 'live-performance' || page === 'live') {
         if (typeof LivePerformance !== 'undefined') {
           if (!_initializedPages['live-performance']) {
             _initializedPages['live-performance'] = true;
@@ -235,7 +237,6 @@ const App = (() => {
           }
           if (LivePerformance.resizeCanvases) LivePerformance.resizeCanvases();
         }
-      } else if (page === 'live') {
         if (typeof Live !== 'undefined') {
           if (!_initializedPages['live']) {
             _initializedPages['live'] = true;
@@ -1020,61 +1021,133 @@ const App = (() => {
   function drawTachoCanvas(rpm, maxRpm) {
     const canvas = document.getElementById('race-tacho-canvas');
     if (!canvas) return;
+
+    if (canvas.width !== 380 || canvas.height !== 220) {
+      canvas.width = 380;
+      canvas.height = 220;
+    }
+
     const ctx = canvas.getContext('2d');
     const w = canvas.width;
     const h = canvas.height;
     const cx = w / 2;
     const cy = h / 2 + 25;
-    const radius = 100;
+    const radius = 92;
 
     ctx.clearRect(0, 0, w, h);
 
-    const startAngle = 0.85 * Math.PI;
-    const endAngle = 2.15 * Math.PI;
+    const startAngle = 0.82 * Math.PI;
+    const endAngle = 2.18 * Math.PI;
 
-    // Outer Background Track
+    // 1. Outer Metallic Bezel Ring
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius + 10, startAngle, endAngle);
+    ctx.strokeStyle = '#1E293B';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // 2. Outer Background Track (Glowing Dark Cyan Track)
     ctx.beginPath();
     ctx.arc(cx, cy, radius, startAngle, endAngle);
-    ctx.strokeStyle = '#2A384A';
+    ctx.strokeStyle = '#0F172A';
     ctx.lineWidth = 14;
     ctx.lineCap = 'round';
     ctx.stroke();
 
-    // Active Glowing RPM Arc
-    const ratio = Math.max(0, Math.min(1, rpm / maxRpm));
+    // Outer Cyan Outline
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius + 6, startAngle, endAngle);
+    ctx.strokeStyle = 'rgba(0, 229, 255, 0.2)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Redline Zone Track (9.5 to 12 x1000 RPM)
+    const redlineStart = startAngle + (9.5 / 12) * (endAngle - startAngle);
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, redlineStart, endAngle);
+    ctx.strokeStyle = 'rgba(255, 61, 61, 0.35)';
+    ctx.lineWidth = 14;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // 3. Active Glowing RPM Arc
+    const ratio = Math.max(0, Math.min(1, (rpm || 0) / (maxRpm || 12000)));
     const activeEnd = startAngle + ratio * (endAngle - startAngle);
 
     if (ratio > 0) {
       const gradient = ctx.createLinearGradient(0, 0, w, 0);
-      gradient.addColorStop(0, '#ffffff');    // Starts at White
-      gradient.addColorStop(0.5, '#FF9800');  // Transition light orange
-      gradient.addColorStop(0.8, '#FF5722');  // Racing Orange
-      gradient.addColorStop(1.0, '#ef4444');  // Racing Red
+      gradient.addColorStop(0, '#00E5FF');
+      gradient.addColorStop(0.5, '#47FF7A');
+      gradient.addColorStop(0.8, '#FFD400');
+      gradient.addColorStop(1.0, '#FF3D3D');
 
       ctx.beginPath();
       ctx.arc(cx, cy, radius, startAngle, activeEnd);
       ctx.strokeStyle = gradient;
       ctx.lineWidth = 14;
       ctx.lineCap = 'round';
-      ctx.shadowColor = ratio > 0.8 ? '#ef4444' : '#FF5722';
-      ctx.shadowBlur = 15;
+      ctx.shadowColor = ratio > 0.8 ? '#FF3D3D' : '#00E5FF';
+      ctx.shadowBlur = 10;
       ctx.stroke();
-      ctx.shadowBlur = 0; // Reset shadow
+      ctx.shadowBlur = 0;
     }
 
-    // Ticks & Numbers (0 to 12 x1000 for matic)
-    ctx.fillStyle = '#777777';
-    ctx.font = 'bold 11px Inter, sans-serif';
+    // 4. Tick Marks & Labels (0 to 12 x1000)
+    ctx.font = '900 11px monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    for (let i = 0; i <= 12; i += 2) {
+    for (let i = 0; i <= 12; i++) {
       const tickRatio = i / 12;
       const ang = startAngle + tickRatio * (endAngle - startAngle);
-      const tx = cx + (radius - 24) * Math.cos(ang);
-      const ty = cy + (radius - 24) * Math.sin(ang);
-      ctx.fillText(i.toString(), tx, ty);
+      const isMajor = i % 2 === 0;
+
+      const innerR = radius - (isMajor ? 16 : 10);
+      const outerR = radius - 4;
+      const x1 = cx + innerR * Math.cos(ang);
+      const y1 = cy + innerR * Math.sin(ang);
+      const x2 = cx + outerR * Math.cos(ang);
+      const y2 = cy + outerR * Math.sin(ang);
+
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.strokeStyle = i >= 10 ? '#FF3D3D' : (isMajor ? '#00E5FF' : '#475569');
+      ctx.lineWidth = isMajor ? 2.5 : 1;
+      ctx.stroke();
+
+      if (isMajor) {
+        const tx = cx + (radius - 24) * Math.cos(ang);
+        const ty = cy + (radius - 24) * Math.sin(ang);
+        ctx.fillStyle = i >= 10 ? '#FF3D3D' : '#FFFFFF';
+        ctx.fillText(i.toString(), tx, ty);
+      }
     }
+
+    // 5. Glowing Pointer Needle
+    const needleAng = startAngle + ratio * (endAngle - startAngle);
+    const needleLen = radius - 16;
+    const nx = cx + needleLen * Math.cos(needleAng);
+    const ny = cy + needleLen * Math.sin(needleAng);
+
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(nx, ny);
+    ctx.strokeStyle = ratio > 0.8 ? '#FF3D3D' : '#00E5FF';
+    ctx.lineWidth = 3;
+    ctx.shadowColor = ratio > 0.8 ? '#FF3D3D' : '#00E5FF';
+    ctx.shadowBlur = 8;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Center Cap
+    ctx.beginPath();
+    ctx.arc(cx, cy, 6, 0, 2 * Math.PI);
+    ctx.fillStyle = '#0F172A';
+    ctx.fill();
+    ctx.strokeStyle = '#00E5FF';
+    ctx.lineWidth = 2;
+    ctx.stroke();
   }
 
   // Demo Simulation High-Rev Acceleration Run

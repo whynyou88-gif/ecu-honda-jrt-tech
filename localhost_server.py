@@ -3191,21 +3191,67 @@ async def api_reset_ecu(request):
 import platform
 import uuid
 import hashlib
+import hmac
 
-async def api_hwid(request):
+MASTER_SECRET = b"JRT-TECH-PRO-MASTER-SECRET-2026-NATIVE-REMAP-STUDIO"
+LICENSE_FILE_PATH = os.path.join(script_dir_base, "license.dat")
+
+def get_machine_hwid():
     try:
         raw_str = f"{platform.node()}-{platform.machine()}-{platform.processor()}-{uuid.getnode()}"
         sha = hashlib.sha256(raw_str.encode('utf-8')).hexdigest().upper()
-        hwid = f"JRT-{sha[0:4]}-{sha[4:8]}-{sha[8:12]}"
+        return f"JRT-{sha[0:4]}-{sha[4:8]}-{sha[8:12]}"
     except Exception:
-        hwid = "JRT-884A-99F1-33BC"
-    return web.json_response({"status": "ok", "hwid": hwid})
+        return "JRT-884A-99F1-33BC"
+
+def check_local_license():
+    try:
+        hwid = get_machine_hwid()
+        h = hmac.new(MASTER_SECRET, hwid.encode('utf-8'), hashlib.sha256).hexdigest().upper()
+        expected_key = f"KEY-{h[0:4]}-{h[4:8]}-{h[8:12]}-{h[12:16]}"
+
+        if os.path.exists(LICENSE_FILE_PATH):
+            with open(LICENSE_FILE_PATH, "r") as f:
+                data = json.load(f)
+                saved_key = data.get("key", "").strip().upper()
+                if saved_key.replace("-", "") == expected_key.replace("-", ""):
+                    return True, hwid, expected_key
+    except Exception as e:
+        print("[License Check Exception]", e)
+    return False, get_machine_hwid(), ""
+
+async def api_hwid(request):
+    activated, hwid, key = check_local_license()
+    return web.json_response({"status": "ok", "hwid": hwid, "activated": activated, "key": key})
+
+async def api_license_status(request):
+    activated, hwid, key = check_local_license()
+    return web.json_response({"status": "ok", "activated": activated, "hwid": hwid, "key": key})
+
+async def api_activate_license(request):
+    try:
+        data = await request.json()
+        key = data.get("key", "").strip().upper()
+        hwid = get_machine_hwid()
+        h = hmac.new(MASTER_SECRET, hwid.encode('utf-8'), hashlib.sha256).hexdigest().upper()
+        expected = f"KEY-{h[0:4]}-{h[4:8]}-{h[8:12]}-{h[12:16]}"
+
+        if key.replace("-", "") == expected.replace("-", ""):
+            with open(LICENSE_FILE_PATH, "w") as f:
+                json.dump({"activated": True, "hwid": hwid, "key": expected, "activated_at": str(datetime.datetime.now())}, f)
+            return web.json_response({"status": "ok", "message": "License activated successfully", "activated": True})
+        else:
+            return web.json_response({"status": "error", "message": f"Kunci aktivasi salah untuk HWID {hwid}"}, status=400)
+    except Exception as e:
+        return web.json_response({"status": "error", "message": str(e)}, status=500)
 
 # Web server initialization
 app = web.Application()
 
 # Routes setup
 app.router.add_get('/api/hwid', api_hwid)
+app.router.add_get('/api/license/status', api_license_status)
+app.router.add_post('/api/license/activate', api_activate_license)
 app.router.add_get('/api/status', api_status)
 app.router.add_get('/api/info', api_info)
 app.router.add_get('/api/live', api_live)
