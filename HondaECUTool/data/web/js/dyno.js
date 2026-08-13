@@ -460,6 +460,23 @@ const DynoUI = (function() {
     updateChartsDisplay();
   }
 
+  function rebuildCharts() {
+    if (_chart) {
+      try { _chart.destroy(); } catch (e) {}
+      _chart = null;
+    }
+    if (_afrChart) {
+      try { _afrChart.destroy(); } catch (e) {}
+      _afrChart = null;
+    }
+    ensureCharts();
+    updateChartsDisplay();
+  }
+
+  function resizeCanvases() {
+    rebuildCharts();
+  }
+
   let _renderPending = false;
   let _isDebugMode = false;
 
