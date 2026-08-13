@@ -57,7 +57,9 @@ const App = (() => {
 
   function showActivationModal() {
     const modal = document.getElementById('modal-activation');
+    const closeBtn = document.getElementById('btn-close-activation-modal');
     if (modal) modal.style.display = 'flex';
+    if (closeBtn) closeBtn.style.display = isSoftwareActivated() ? 'block' : 'none';
   }
 
   function closeActivationModal() {
@@ -642,10 +644,22 @@ const App = (() => {
     if(typeof LivePerformance !== 'undefined') LivePerformance.init();
 
     // ---- LICENSE ACTIVATION SYSTEM ----
+    const navItemLicense = document.getElementById('nav-item-license');
+    const btnCloseAct = document.getElementById('btn-close-activation-modal');
     const btnVerifyKey = document.getElementById('btn-verify-key');
+    const btnResetLicense = document.getElementById('btn-reset-license');
     const keyInput = document.getElementById('activation-key-input');
     const hwidDisplay = document.getElementById('activation-hwid-display');
     const statusBadge = document.getElementById('activation-status-badge');
+
+    if (navItemLicense) navItemLicense.addEventListener('click', showActivationModal);
+    if (btnCloseAct) btnCloseAct.addEventListener('click', () => {
+      if (isSoftwareActivated()) {
+        closeActivationModal();
+      } else {
+        toast('error', '🔒 Software Terkunci!', 'Masukkan Kunci Aktivasi resmi untuk membuka software.');
+      }
+    });
 
     if (btnVerifyKey && keyInput && hwidDisplay) {
       btnVerifyKey.addEventListener('click', async () => {
@@ -667,6 +681,21 @@ const App = (() => {
         } else {
           toast('error', 'Kunci Aktivasi Salah', '❌ Key tidak cocok dengan HWID ini. Hubungi Admin JRT Tech.');
         }
+      });
+    }
+
+    if (btnResetLicense) {
+      btnResetLicense.addEventListener('click', () => {
+        localStorage.removeItem('jrt_license_activated');
+        localStorage.removeItem('jrt_license_key');
+        if (statusBadge) {
+          statusBadge.style.background = 'rgba(255,87,34,0.15)';
+          statusBadge.style.borderColor = '#FF5722';
+          statusBadge.style.color = '#FF5722';
+          statusBadge.textContent = '🔒 STATUS: TERKUNCI (BELUM DIAKTIVASI)';
+        }
+        toast('info', 'Status Lisensi Direset', 'Software kembali terkunci. Silakan uji pengisian Kunci Aktivasi.');
+        showActivationModal();
       });
     }
 
