@@ -19,6 +19,16 @@ public partial class MainWindow : Window
         {
             await webView.EnsureCoreWebView2Async();
 
+            // Intercept and prevent external browser popups (keep all UI inside WPF Window)
+            webView.CoreWebView2.NewWindowRequested += (s, args) =>
+            {
+                args.Handled = true;
+                if (!string.IsNullOrEmpty(args.Uri))
+                {
+                    webView.CoreWebView2.Navigate(args.Uri);
+                }
+            };
+
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
             string webPath = Path.Combine(baseDir, "HondaECUTool", "data", "web");
 
@@ -43,7 +53,7 @@ public partial class MainWindow : Window
             }
             else
             {
-                webView.Source = new Uri("http://localhost:8080/index.html");
+                webView.Source = new Uri("http://127.0.0.1:8080/index.html");
             }
         }
         catch (Exception ex)
