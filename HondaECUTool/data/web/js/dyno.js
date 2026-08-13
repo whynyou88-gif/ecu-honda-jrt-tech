@@ -477,6 +477,30 @@ const DynoUI = (function() {
     rebuildCharts();
   }
 
+  let _isGraphFullScreen = false;
+
+  function toggleFullScreenGraph() {
+    _isGraphFullScreen = !_isGraphFullScreen;
+    const mainGrid = document.getElementById('dyno-main-grid');
+    const leftPanel = document.getElementById('dyno-left-panel');
+    const rightPanel = document.getElementById('dyno-right-panel');
+    const btn = document.getElementById('btn-dyno-fullscreen');
+
+    if (_isGraphFullScreen) {
+      if (leftPanel) leftPanel.style.display = 'none';
+      if (rightPanel) rightPanel.style.display = 'none';
+      if (mainGrid) mainGrid.style.gridTemplateColumns = '1fr';
+      if (btn) btn.innerHTML = '<i class="fa fa-compress"></i> 📱 Standard 3-Column View';
+    } else {
+      if (leftPanel) leftPanel.style.display = 'flex';
+      if (rightPanel) rightPanel.style.display = 'flex';
+      if (mainGrid) mainGrid.style.gridTemplateColumns = '200px minmax(0,1fr) 240px';
+      if (btn) btn.innerHTML = '<i class="fa fa-expand"></i> 📺 Fullscreen / Full Width Graph';
+    }
+
+    setTimeout(rebuildCharts, 100);
+  }
+
   let _renderPending = false;
   let _isDebugMode = false;
 
@@ -1672,7 +1696,10 @@ const DynoUI = (function() {
     renderPageEcuDatabaseTable,
     filterPageEcuDatabaseTable,
     saveEcuFromPageForm,
-    loadEcuFromPageTableToDyno
+    loadEcuFromPageTableToDyno,
+    rebuildCharts,
+    resizeCanvases,
+    toggleFullScreenGraph
   };
 })();
 

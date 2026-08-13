@@ -1426,6 +1426,9 @@
             <button class="btn btn-secondary btn-sm" id="btn-input-ecu-data" onclick="DynoUI.openEcuDataModal()" style="font-size:10px;font-weight:900;background:linear-gradient(180deg,#00E5FF 0%,#0088A3 100%);color:#000;border:none;padding:2px 8px;border-radius:2px;cursor:pointer;">
               <i class="fa fa-microchip"></i> 📝 Input Data ECU
             </button>
+            <button class="btn btn-primary btn-sm" id="btn-dyno-fullscreen" onclick="DynoUI.toggleFullScreenGraph()" style="font-size:10px;font-weight:900;background:linear-gradient(180deg,#FF5722 0%,#E65100 100%);color:#FFF;border:none;padding:3px 10px;border-radius:2px;cursor:pointer;">
+              <i class="fa fa-expand"></i> 📺 Fullscreen / Full Width Graph
+            </button>
             <span>CORR: 1.000 IN:Y ></span>
             <div style="display:flex;gap:4px;">
               <select id="scooter-preset-select" style="background:#1A1A1A;color:#FFCC00;border:1px solid #444;font-size:10px;font-weight:800;padding:2px 6px;border-radius:2px;">
@@ -1482,10 +1485,10 @@
         </div>
 
         <!-- MAIN 3-COLUMN LAYOUT -->
-        <div style="display:grid;grid-template-columns:210px minmax(0,1fr) 260px;gap:4px;padding:4px;background:#000000;height:calc(100vh - 120px);width:100%;box-sizing:border-box;overflow:hidden;">
+        <div id="dyno-main-grid" style="display:grid;grid-template-columns:200px minmax(0,1fr) 240px;gap:4px;padding:4px;background:#000000;height:calc(100vh - 120px);width:100%;box-sizing:border-box;overflow:hidden;transition:grid-template-columns 0.3s ease;">
           
           <!-- LEFT PANEL: OPENED RUNS -->
-          <div style="background:#111;border:1px solid #333;border-radius:2px;padding:6px;display:flex;flex-direction:column;gap:6px;">
+          <div id="dyno-left-panel" style="background:#111;border:1px solid #333;border-radius:2px;padding:6px;display:flex;flex-direction:column;gap:6px;">
             <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #333;padding-bottom:4px;">
               <span style="font-weight:900;color:#00E5FF;font-size:11px;"><i class="fa fa-folder-open"></i> OPENED RUNS</span>
               <button class="btn btn-secondary btn-sm" id="btn-dyno-add-run" onclick="DynoUI.addNewRunSlot()" style="font-size:9px;padding:1px 6px;background:#222;color:#00FF80;border:1px solid #00FF80;font-weight:800;cursor:pointer;">+ New Run</button>
@@ -1586,7 +1589,7 @@
           </div>
 
           <!-- RIGHT PANEL: COMMERCIAL DIGITAL GAUGES (WINPEP / MAINLINE STYLE) -->
-          <div style="background:#0D0D0D;border:1px solid #333;border-radius:2px;padding:6px;display:flex;flex-direction:column;gap:6px;overflow-y:auto;">
+          <div id="dyno-right-panel" style="background:#0D0D0D;border:1px solid #333;border-radius:2px;padding:6px;display:flex;flex-direction:column;gap:6px;overflow-y:auto;">
             
             <!-- GAUGE 1: SPEED KPH -->
             <div style="background:#000;border:1px solid #333;padding:6px;border-radius:2px;">
