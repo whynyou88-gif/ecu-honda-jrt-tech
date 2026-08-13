@@ -598,35 +598,20 @@ const LivePerformance = (() => {
     // Dial Background Arc Ring
     ctx.beginPath();
     ctx.arc(cx, cy, radius - 28, startAngle, endAngle);
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+    ctx.strokeStyle = "rgba(0, 229, 255, 0.25)";
     ctx.lineWidth = 12;
     ctx.stroke();
 
     // Active Sweeping Gradient Arc Fill
     if (rpmPct > 0) {
-      let strokeStyle = "#00E5FF";
-      if (typeof ctx.createConicGradient === 'function') {
-        try {
-          const arcGrad = ctx.createConicGradient(startAngle, cx, cy);
-          arcGrad.addColorStop(0, "#00E5FF");
-          arcGrad.addColorStop(0.4, "#47FF7A");
-          arcGrad.addColorStop(0.7, "#FFD400");
-          arcGrad.addColorStop(1.0, "#FF3D3D");
-          strokeStyle = arcGrad;
-        } catch (e) {
-          strokeStyle = "#00E5FF";
-        }
-      } else {
-        const linGrad = ctx.createLinearGradient(cx - radius, cy - radius, cx + radius, cy + radius);
-        linGrad.addColorStop(0, "#00E5FF");
-        linGrad.addColorStop(0.5, "#47FF7A");
-        linGrad.addColorStop(1.0, "#FF3D3D");
-        strokeStyle = linGrad;
-      }
+      const linGrad = ctx.createLinearGradient(cx - radius, cy - radius, cx + radius, cy + radius);
+      linGrad.addColorStop(0, "#00E5FF");
+      linGrad.addColorStop(0.5, "#47FF7A");
+      linGrad.addColorStop(1.0, "#FF3D3D");
 
       ctx.beginPath();
       ctx.arc(cx, cy, radius - 28, startAngle, startAngle + (endAngle - startAngle) * rpmPct);
-      ctx.strokeStyle = strokeStyle;
+      ctx.strokeStyle = linGrad;
       ctx.lineWidth = 12;
       ctx.stroke();
     }
