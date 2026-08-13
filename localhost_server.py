@@ -70,7 +70,10 @@ try:
     print(f"[Driver] Loaded HondaECU_Serial (pyserial backend) — active port: {_detected_port or 'Scanning'}")
 except Exception as e_ser:
     try:
-        from HondaECU_Serial import HondaECU, find_ftdi_serial_port
+        import importlib
+        _mod_ser = importlib.import_module("HondaECU_Serial")
+        HondaECU = getattr(_mod_ser, "HondaECU")
+        find_ftdi_serial_port = getattr(_mod_ser, "find_ftdi_serial_port")
         HAS_HONDA_ECU = True
         print(f"[Driver] Loaded HondaECU_Serial (direct fallback import)")
     except Exception as e_dir:
@@ -508,7 +511,12 @@ def perform_ecu_id_autodetect():
         try:
             from drivers.ecmids import ECM_IDs
         except ImportError:
-            from ecmids import ECM_IDs
+            try:
+                import importlib
+                _mod_ecm = importlib.import_module("ecmids")
+                ECM_IDs = getattr(_mod_ecm, "ECM_IDs", {})
+            except Exception:
+                ECM_IDs = {}
 
         # 1. Probe Table 0x00 for 5-byte ECM ID (fast 40ms timeout)
         ecmid_bytes = None
