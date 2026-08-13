@@ -94,6 +94,13 @@ const App = (() => {
           }
           if (LivePerformance.resizeCanvases) LivePerformance.resizeCanvases();
         }
+      } else if (page === 'live') {
+        if (typeof Live !== 'undefined') {
+          if (!_initializedPages['live']) {
+            _initializedPages['live'] = true;
+            if (Live.init) Live.init();
+          }
+        }
       } else if (page === 'mapeditor') {
         if (typeof MapEditor !== 'undefined' && !_initializedPages['mapeditor']) {
           _initializedPages['mapeditor'] = true;
@@ -586,6 +593,102 @@ const App = (() => {
     if(typeof FileManager !== 'undefined') FileManager.init();
     if(typeof DynoUI !== 'undefined') DynoUI.init();
     if(typeof LivePerformance !== 'undefined') LivePerformance.init();
+
+    // ---- KEYGEN & LICENSE ACTIVATION SYSTEM ----
+    const MASTER_SECRET = "JRT-TECH-PRO-MASTER-SECRET-2026-NATIVE-REMAP-STUDIO";
+
+    async function computeHmacKey(hwidText) {
+      try {
+        const cleanHwid = (hwidText || "JRT-884A-99F1-33BC").trim().toUpperCase();
+        const enc = new TextEncoder();
+        const keyData = enc.encode(MASTER_SECRET);
+        const msgData = enc.encode(cleanHwid);
+        const cryptoKey = await crypto.subtle.importKey(
+          'raw', keyData, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+        );
+        const signature = await crypto.subtle.sign('HMAC', cryptoKey, msgData);
+        const hashArray = Array.from(new Uint8Array(signature));
+        const hexStr = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+        return `KEY-${hexStr.substring(0, 4)}-${hexStr.substring(4, 8)}-${hexStr.substring(8, 12)}-${hexStr.substring(12, 16)}`;
+      } catch (e) {
+        return "KEY-8F12-4B9A-0C31-77EE";
+      }
+    }
+
+    function showActivationModal() {
+      const modal = document.getElementById('modal-activation');
+      if (modal) modal.style.display = 'flex';
+    }
+
+    function closeActivationModal() {
+      const modal = document.getElementById('modal-activation');
+      if (modal) modal.style.display = 'none';
+    }
+
+    const btnShowKey = document.getElementById('btn-show-license-key');
+    const navItemLicense = document.getElementById('nav-item-license');
+    const btnCloseAct = document.getElementById('btn-close-activation-modal');
+    const btnAutoGen = document.getElementById('btn-auto-gen-key');
+    const btnVerifyKey = document.getElementById('btn-verify-key');
+    const btnDemoMode = document.getElementById('btn-demo-mode');
+    const keyInput = document.getElementById('activation-key-input');
+    const hwidDisplay = document.getElementById('activation-hwid-display');
+    const statusBadge = document.getElementById('activation-status-badge');
+
+    if (btnShowKey) btnShowKey.addEventListener('click', showActivationModal);
+    if (navItemLicense) navItemLicense.addEventListener('click', showActivationModal);
+    if (btnCloseAct) btnCloseAct.addEventListener('click', closeActivationModal);
+
+    if (btnAutoGen && hwidDisplay && keyInput) {
+      btnAutoGen.addEventListener('click', async () => {
+        const hwid = hwidDisplay.textContent.trim();
+        const generatedKey = await computeHmacKey(hwid);
+        keyInput.value = generatedKey;
+        toast('info', 'Keygen Generated', `Kunci Aktivasi untuk ${hwid}: ${generatedKey}`);
+      });
+    }
+
+    if (btnVerifyKey && keyInput && hwidDisplay) {
+      btnVerifyKey.addEventListener('click', async () => {
+        const hwid = hwidDisplay.textContent.trim();
+        const enteredKey = keyInput.value.trim().toUpperCase();
+        const expectedKey = await computeHmacKey(hwid);
+
+        if (enteredKey === expectedKey) {
+          localStorage.setItem('jrt_license_activated', 'true');
+          localStorage.setItem('jrt_license_key', enteredKey);
+          if (statusBadge) {
+            statusBadge.style.background = 'rgba(71,255,122,0.15)';
+            statusBadge.style.borderColor = '#47FF7A';
+            statusBadge.style.color = '#47FF7A';
+            statusBadge.textContent = 'STATUS: TERAKTIVASI LENGKAP ✓';
+          }
+          toast('success', 'Lisensi Aktivasi Berhasil!', '✅ Software JRT Tech ANALIST Pro teraktivasi penuh.');
+          setTimeout(closeActivationModal, 1200);
+        } else {
+          toast('error', 'Kunci Aktivasi Salah', '❌ Key tidak cocok dengan HWID ini. Gunakan jrt-keygen.py untuk generate key.');
+        }
+      });
+    }
+
+    if (btnDemoMode) {
+      btnDemoMode.addEventListener('click', () => {
+        closeActivationModal();
+        toast('info', 'Mode Trial / Demo', '▶ Berjalan dalam Mode Trial / Demo.');
+      });
+    }
+
+    // Auto-check activation on launch
+    const isActivated = localStorage.getItem('jrt_license_activated') === 'true';
+    if (isActivated && statusBadge) {
+      statusBadge.style.background = 'rgba(71,255,122,0.15)';
+      statusBadge.style.borderColor = '#47FF7A';
+      statusBadge.style.color = '#47FF7A';
+      statusBadge.textContent = 'STATUS: TERAKTIVASI LENGKAP ✓';
+    } else {
+      // Auto open modal on launch if not activated
+      setTimeout(showActivationModal, 600);
+    }
 
     // Logger page controls
     const btnLogRefresh = document.getElementById('btn-log-refresh');

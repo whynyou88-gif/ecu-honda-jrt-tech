@@ -136,6 +136,7 @@
       <div class="nav-item" data-page="logger"><i class="fa fa-file-lines"></i> Logs</div>
 
       <div class="nav-section">System</div>
+      <div class="nav-item" id="nav-item-license"><i class="fa fa-key"></i> Lisensi &amp; Keygen</div>
       <div class="nav-item" data-page="settings"><i class="fa fa-gear"></i> Settings</div>
       <div class="nav-item" data-page="about"><i class="fa fa-circle-info"></i> About</div>
     </nav>
@@ -155,6 +156,9 @@
         <option value="">Auto-Detect Port</option>
       </select>
 
+      <button class="btn btn-warning btn-sm" id="btn-show-license-key" title="Aktivasi Lisensi & Keygen" style="background:#FF5722; color:#FFF; font-weight:800; border:none; margin-right:4px;">
+        <i class="fa fa-key"></i> Keygen
+      </button>
       <button class="btn btn-primary btn-sm" id="btn-connect">
         <i class="fa fa-plug"></i> Connect ECU
       </button>
@@ -2644,10 +2648,13 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 <!-- ===== MODAL: HWID LICENSE ACTIVATION KEYGEN SYSTEM ===== -->
 <div id="modal-activation" class="modal-backdrop" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(6,9,15,0.92); z-index:999999; align-items:center; justify-content:center; backdrop-filter:blur(8px);">
-  <div style="background:#121A24; border:1px solid #FF5722; border-radius:12px; padding:28px; width:480px; max-width:90%; color:#FFF; box-shadow:0 12px 40px rgba(0,0,0,0.8); text-align:center;">
+  <div style="background:#121A24; border:1px solid #FF5722; border-radius:12px; padding:28px; width:500px; max-width:92%; color:#FFF; box-shadow:0 12px 40px rgba(0,0,0,0.8); text-align:center; position:relative;">
+    <button id="btn-close-activation-modal" style="position:absolute; top:12px; right:16px; background:none; border:none; color:#AAA; font-size:20px; cursor:pointer;">&times;</button>
     <div style="font-size:36px; margin-bottom:8px;">🔑</div>
-    <h2 style="color:#FF5722; font-weight:900; margin-bottom:6px; font-size:20px;">JRT TECH ANALIST PRO — LISENSI AKTIVASI</h2>
-    <p style="font-size:12px; color:#A0AAB0; margin-bottom:20px;">Masukkan Kunci Aktivasi resmi (Keygen) untuk mengaktifkan software pada PC ini.</p>
+    <h2 style="color:#FF5722; font-weight:900; margin-bottom:4px; font-size:20px;">JRT TECH ANALIST PRO — LISENSI AKTIVASI</h2>
+    <div id="activation-status-badge" style="display:inline-block; background:rgba(255,87,34,0.15); border:1px solid #FF5722; color:#FF5722; font-size:11px; font-weight:800; padding:3px 10px; border-radius:12px; margin-bottom:16px;">
+      STATUS: UNREGISTERED (SILAKAN AKTIFKAN)
+    </div>
     
     <div style="background:#06090F; border:1px dashed #00E5FF; border-radius:8px; padding:12px; margin-bottom:16px; text-align:left;">
       <div style="font-size:10px; font-weight:700; color:#00E5FF; margin-bottom:4px;">CUSTOMER HARDWARE ID (HWID):</div>
@@ -2655,9 +2662,12 @@ document.addEventListener('DOMContentLoaded', () => {
       <div style="font-size:9px; color:#777; margin-top:4px;">Kirim HWID ini ke Admin JRT Tech untuk mendapatkan Kunci Aktivasi.</div>
     </div>
 
-    <div style="text-align:left; margin-bottom:20px;">
-      <label style="font-size:11px; font-weight:700; color:#A0AAB0; display:block; margin-bottom:6px;">KUNCI AKTIVASI (ACTIVATION KEY):</label>
-      <input type="text" id="activation-key-input" class="form-control" placeholder="KEY-XXXX-XXXX-XXXX-XXXX" style="width:100%; height:40px; background:#06090F; border:1px solid #FF5722; color:#FFF; font-family:monospace; font-size:14px; text-align:center; border-radius:6px;">
+    <div style="text-align:left; margin-bottom:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <label style="font-size:11px; font-weight:700; color:#A0AAB0;">KUNCI AKTIVASI (ACTIVATION KEY):</label>
+        <button id="btn-auto-gen-key" style="background:rgba(0,229,255,0.1); border:1px solid #00E5FF; color:#00E5FF; border-radius:4px; padding:2px 8px; font-size:10px; font-weight:700; cursor:pointer;">⚡ Generate Key (Admin Test)</button>
+      </div>
+      <input type="text" id="activation-key-input" class="form-control" placeholder="KEY-XXXX-XXXX-XXXX-XXXX" style="width:100%; height:40px; background:#06090F; border:1px solid #FF5722; color:#FFF; font-family:monospace; font-size:14px; text-align:center; border-radius:6px; text-transform:uppercase;">
     </div>
 
     <div style="display:flex; gap:10px; justify-content:flex-end;">
