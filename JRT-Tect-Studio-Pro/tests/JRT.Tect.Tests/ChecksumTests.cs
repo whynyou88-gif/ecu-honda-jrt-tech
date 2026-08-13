@@ -1,6 +1,7 @@
 using Xunit;
 using JRT.Tect.Core.Checksum;
 using JRT.Tect.Core.Security;
+using JRT.Tect.Core.Licensing;
 
 namespace JRT.Tect.Tests;
 
@@ -48,5 +49,15 @@ public class ChecksumAndSecurityTests
         byte[] seed = new byte[] { 0x11, 0x22, 0x33, 0x44 };
         byte[] key = _seedKeyProvider.CalculateKey(seed, "K60A");
         Assert.Equal(new byte[] { 0xAA, 0xBB, 0xCC, 0xDD }, key);
+    }
+
+    [Fact]
+    public void Licensing_GenerateActivationKey_MatchesHMACKeygen()
+    {
+        string hwid = "JRT-884A-99F1-33BC";
+        string key = LicensingService.GenerateActivationKey(hwid);
+        Assert.StartsWith("KEY-", key);
+        Assert.True(LicensingService.ValidateLicenseKey(key, hwid));
+        Assert.False(LicensingService.ValidateLicenseKey("KEY-INVALID-KEY", hwid));
     }
 }
