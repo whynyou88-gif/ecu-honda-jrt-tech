@@ -788,7 +788,7 @@ const App = (() => {
     // Outer Background Track
     ctx.beginPath();
     ctx.arc(cx, cy, radius, startAngle, endAngle);
-    ctx.strokeStyle = '#222222';
+    ctx.strokeStyle = '#2A384A';
     ctx.lineWidth = 14;
     ctx.lineCap = 'round';
     ctx.stroke();

@@ -263,7 +263,7 @@ const Live = (() => {
     // Track
     ctx.beginPath();
     ctx.arc(cx, cy, r, startAng, endAng);
-    ctx.strokeStyle = '#222';
+    ctx.strokeStyle = '#2A384A';
     ctx.lineWidth = 10;
     ctx.lineCap = 'round';
     ctx.stroke();
@@ -312,7 +312,7 @@ const Live = (() => {
     // Outer Track
     ctx.beginPath();
     ctx.arc(cx, cy, r, startAng, endAng);
-    ctx.strokeStyle = '#222';
+    ctx.strokeStyle = '#2A384A';
     ctx.lineWidth = 12;
     ctx.lineCap = 'round';
     ctx.stroke();
@@ -391,7 +391,7 @@ const Live = (() => {
     // Track
     ctx.beginPath();
     ctx.arc(cx, cy, r, startAng, endAng);
-    ctx.strokeStyle = '#222';
+    ctx.strokeStyle = '#2A384A';
     ctx.lineWidth = 10;
     ctx.lineCap = 'round';
     ctx.stroke();
@@ -440,7 +440,7 @@ const Live = (() => {
     // Track
     ctx.beginPath();
     ctx.arc(cx, cy, r, startAng, endAng);
-    ctx.strokeStyle = '#222';
+    ctx.strokeStyle = '#2A384A';
     ctx.lineWidth = 10;
     ctx.lineCap = 'round';
     ctx.stroke();
@@ -771,6 +771,12 @@ const Live = (() => {
         if (typeof App !== 'undefined') App.toast('success', 'Tuning Parameters Saved', 'New mode parameters written to active ECU map!');
       });
     }
+
+    // Render resting initial gauges immediately on page load
+    drawSpeedGauge(0);
+    drawTachoGauge(0, 0);
+    drawTpsGauge(0);
+    drawAfrGauge(14.7);
 
     // Register WebSocket spontaneous telemetry stream
     if (typeof API !== 'undefined' && API.onLiveUpdate) {
