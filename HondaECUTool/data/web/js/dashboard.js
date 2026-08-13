@@ -651,9 +651,34 @@ const App = (() => {
     const btnCloseAct = document.getElementById('btn-close-activation-modal');
     const btnVerifyKey = document.getElementById('btn-verify-key');
     const btnResetLicense = document.getElementById('btn-reset-license');
+    const btnCopyHwid = document.getElementById('btn-copy-hwid');
     const keyInput = document.getElementById('activation-key-input');
     const hwidDisplay = document.getElementById('activation-hwid-display');
     const statusBadge = document.getElementById('activation-status-badge');
+
+    function getHwidValue() {
+      if (!hwidDisplay) return "JRT-884A-99F1-33BC";
+      return (hwidDisplay.value || hwidDisplay.textContent || "JRT-884A-99F1-33BC").trim();
+    }
+
+    function copyHwidToClipboard() {
+      const hwidText = getHwidValue();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(hwidText);
+      } else {
+        if (hwidDisplay && hwidDisplay.select) hwidDisplay.select();
+        document.execCommand('copy');
+      }
+      toast('success', 'HWID Disalin! 📋', `HWID (${hwidText}) telah disalin ke clipboard.`);
+    }
+
+    if (btnCopyHwid) btnCopyHwid.addEventListener('click', copyHwidToClipboard);
+    if (hwidDisplay) {
+      hwidDisplay.addEventListener('click', () => {
+        if (hwidDisplay.select) hwidDisplay.select();
+        copyHwidToClipboard();
+      });
+    }
 
     if (navItemLicense) navItemLicense.addEventListener('click', showActivationModal);
     if (btnCloseAct) btnCloseAct.addEventListener('click', () => {
@@ -664,9 +689,9 @@ const App = (() => {
       }
     });
 
-    if (btnVerifyKey && keyInput && hwidDisplay) {
+    if (btnVerifyKey && keyInput) {
       btnVerifyKey.addEventListener('click', async () => {
-        const hwid = hwidDisplay.textContent.trim();
+        const hwid = getHwidValue();
         const enteredKey = keyInput.value.trim().toUpperCase();
         const expectedKey = await computeHmacKey(hwid);
 

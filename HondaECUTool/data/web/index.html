@@ -2657,8 +2657,13 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
     
     <div style="background:#06090F; border:1px dashed #00E5FF; border-radius:8px; padding:14px; margin-bottom:18px; text-align:left;">
-      <div style="font-size:10px; font-weight:700; color:#00E5FF; margin-bottom:4px;">CUSTOMER HARDWARE ID (HWID PC):</div>
-      <div id="activation-hwid-display" style="font-family:monospace; font-size:17px; font-weight:900; color:#FFFFFF; letter-spacing:1.5px; user-select:all;">JRT-884A-99F1-33BC</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <div style="font-size:10px; font-weight:700; color:#00E5FF;">CUSTOMER HARDWARE ID (HWID PC):</div>
+        <button id="btn-copy-hwid" style="background:rgba(0,229,255,0.15); border:1px solid #00E5FF; color:#00E5FF; border-radius:4px; padding:3px 10px; font-size:11px; font-weight:800; cursor:pointer;" title="Salin HWID ke Clipboard">
+          <i class="fa fa-copy"></i> Salin HWID
+        </button>
+      </div>
+      <input type="text" id="activation-hwid-display" readonly value="JRT-884A-99F1-33BC" style="width:100%; font-family:monospace; font-size:18px; font-weight:900; color:#00E5FF; background:transparent; border:none; letter-spacing:2px; cursor:pointer; user-select:all;" title="Klik untuk menyeleksi &amp; salin">
       <div style="font-size:9px; color:#777; margin-top:4px;">Kirim HWID ini ke Admin JRT Tech untuk mendapatkan Kunci Aktivasi resmi.</div>
     </div>
 
