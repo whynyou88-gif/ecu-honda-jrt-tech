@@ -136,7 +136,6 @@
       <div class="nav-item" data-page="logger"><i class="fa fa-file-lines"></i> Logs</div>
 
       <div class="nav-section">System</div>
-      <div class="nav-item" id="nav-item-license"><i class="fa fa-key"></i> Lisensi &amp; Keygen</div>
       <div class="nav-item" data-page="settings"><i class="fa fa-gear"></i> Settings</div>
       <div class="nav-item" data-page="about"><i class="fa fa-circle-info"></i> About</div>
     </nav>
@@ -156,9 +155,6 @@
         <option value="">Auto-Detect Port</option>
       </select>
 
-      <button class="btn btn-warning btn-sm" id="btn-show-license-key" title="Aktivasi Lisensi & Keygen" style="background:#FF5722; color:#FFF; font-weight:800; border:none; margin-right:4px;">
-        <i class="fa fa-key"></i> Keygen
-      </button>
       <button class="btn btn-primary btn-sm" id="btn-connect">
         <i class="fa fa-plug"></i> Connect ECU
       </button>
@@ -2646,13 +2642,12 @@ document.addEventListener('DOMContentLoaded', () => {
       <i class="fa fa-triangle-exclamation"></i> PERINGATAN: JANGAN CABUT KABEL ATAU MATIKAN KONTAK SAAT FLASH BERJALAN!
     </div>
   </div>
-<!-- ===== MODAL: HWID LICENSE ACTIVATION KEYGEN SYSTEM (STRICT SECURITY LOCK) ===== -->
+<!-- ===== MODAL: HWID LICENSE ACTIVATION SYSTEM (STRICT CUSTOMER LOCK) ===== -->
 <div id="modal-activation" class="modal-backdrop" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(6,9,15,0.96); z-index:9999999; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
-  <div style="background:#121A24; border:2px solid #FF5722; border-radius:14px; padding:32px; width:520px; max-width:94%; color:#FFF; box-shadow:0 0 50px rgba(255,87,34,0.4); text-align:center; position:relative;">
-    <button id="btn-close-activation-modal" style="display:none; position:absolute; top:12px; right:16px; background:none; border:none; color:#AAA; font-size:24px; cursor:pointer;">&times;</button>
+  <div style="background:#121A24; border:2px solid #FF5722; border-radius:14px; padding:32px; width:500px; max-width:94%; color:#FFF; box-shadow:0 0 50px rgba(255,87,34,0.4); text-align:center; position:relative;">
     <div style="font-size:42px; margin-bottom:8px;">🔒</div>
-    <h2 style="color:#FF5722; font-weight:900; margin-bottom:4px; font-size:22px; letter-spacing:0.5px;">JRT TECH ANALIST PRO — LISENSI AKTIVASI</h2>
-    <p style="font-size:12px; color:#A0AAB0; margin-bottom:14px;">Software terkunci. Silakan masukkan Kunci Aktivasi resmi (Keygen) untuk membuka akses.</p>
+    <h2 style="color:#FF5722; font-weight:900; margin-bottom:4px; font-size:22px; letter-spacing:0.5px;">JRT TECH ANALIST PRO — AKTIVASI SOFTWARE</h2>
+    <p style="font-size:12px; color:#A0AAB0; margin-bottom:14px;">Software terkunci. Silakan masukkan Kunci Aktivasi resmi untuk membuka akses.</p>
 
     <div id="activation-status-badge" style="display:inline-block; background:rgba(255,87,34,0.15); border:1px solid #FF5722; color:#FF5722; font-size:11px; font-weight:800; padding:4px 14px; border-radius:12px; margin-bottom:18px;">
       🔒 STATUS: TERKUNCI (BELUM DIAKTIVASI)
@@ -2665,10 +2660,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
 
     <div style="text-align:left; margin-bottom:20px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-        <label style="font-size:11px; font-weight:700; color:#A0AAB0;">KUNCI AKTIVASI (ACTIVATION KEY):</label>
-        <button id="btn-auto-gen-key" style="background:rgba(0,229,255,0.1); border:1px solid #00E5FF; color:#00E5FF; border-radius:4px; padding:2px 8px; font-size:10px; font-weight:700; cursor:pointer;">⚡ Generate Key (Admin Test)</button>
-      </div>
+      <label style="font-size:11px; font-weight:700; color:#A0AAB0; display:block; margin-bottom:6px;">KUNCI AKTIVASI (ACTIVATION KEY):</label>
       <input type="text" id="activation-key-input" class="form-control" placeholder="KEY-XXXX-XXXX-XXXX-XXXX" style="width:100%; height:42px; background:#06090F; border:1px solid #FF5722; color:#FFF; font-family:monospace; font-size:15px; text-align:center; border-radius:6px; text-transform:uppercase;">
     </div>
 

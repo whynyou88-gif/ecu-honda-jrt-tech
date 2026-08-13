@@ -48,17 +48,48 @@ const App = (() => {
     }
   }
 
-  // ---- Page navigation ----
-  const _initializedPages = {};
+  // ---- KEYGEN & LICENSE ACTIVATION SYSTEM ----
+  const MASTER_SECRET = "JRT-TECH-PRO-MASTER-SECRET-2026-NATIVE-REMAP-STUDIO";
 
   function isSoftwareActivated() {
     return localStorage.getItem('jrt_license_activated') === 'true';
   }
 
+  function showActivationModal() {
+    const modal = document.getElementById('modal-activation');
+    if (modal) modal.style.display = 'flex';
+  }
+
+  function closeActivationModal() {
+    const modal = document.getElementById('modal-activation');
+    if (modal) modal.style.display = 'none';
+  }
+
+  async function computeHmacKey(hwidText) {
+    try {
+      const cleanHwid = (hwidText || "JRT-884A-99F1-33BC").trim().toUpperCase();
+      const enc = new TextEncoder();
+      const keyData = enc.encode(MASTER_SECRET);
+      const msgData = enc.encode(cleanHwid);
+      const cryptoKey = await crypto.subtle.importKey(
+        'raw', keyData, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+      );
+      const signature = await crypto.subtle.sign('HMAC', cryptoKey, msgData);
+      const hashArray = Array.from(new Uint8Array(signature));
+      const hexStr = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+      return `KEY-${hexStr.substring(0, 4)}-${hexStr.substring(4, 8)}-${hexStr.substring(8, 12)}-${hexStr.substring(12, 16)}`;
+    } catch (e) {
+      return "KEY-8F12-4B9A-0C31-77EE";
+    }
+  }
+
+  // ---- Page navigation ----
+  const _initializedPages = {};
+
   function navigate(page) {
     if (!isSoftwareActivated()) {
       showActivationModal();
-      toast('error', '🔒 Software Terkunci!', 'Masukkan Kunci Aktivasi HWID resmi untuk membuka akses software.');
+      toast('error', '🔒 Software Terkunci!', 'Masukkan Kunci Aktivasi resmi untuk membuka akses software.');
       return;
     }
 
@@ -610,61 +641,11 @@ const App = (() => {
     if(typeof DynoUI !== 'undefined') DynoUI.init();
     if(typeof LivePerformance !== 'undefined') LivePerformance.init();
 
-    // ---- KEYGEN & LICENSE ACTIVATION SYSTEM ----
-    const MASTER_SECRET = "JRT-TECH-PRO-MASTER-SECRET-2026-NATIVE-REMAP-STUDIO";
-
-    async function computeHmacKey(hwidText) {
-      try {
-        const cleanHwid = (hwidText || "JRT-884A-99F1-33BC").trim().toUpperCase();
-        const enc = new TextEncoder();
-        const keyData = enc.encode(MASTER_SECRET);
-        const msgData = enc.encode(cleanHwid);
-        const cryptoKey = await crypto.subtle.importKey(
-          'raw', keyData, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
-        );
-        const signature = await crypto.subtle.sign('HMAC', cryptoKey, msgData);
-        const hashArray = Array.from(new Uint8Array(signature));
-        const hexStr = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
-        return `KEY-${hexStr.substring(0, 4)}-${hexStr.substring(4, 8)}-${hexStr.substring(8, 12)}-${hexStr.substring(12, 16)}`;
-      } catch (e) {
-        return "KEY-8F12-4B9A-0C31-77EE";
-      }
-    }
-
-    function showActivationModal() {
-      const modal = document.getElementById('modal-activation');
-      const closeBtn = document.getElementById('btn-close-activation-modal');
-      if (modal) modal.style.display = 'flex';
-      if (closeBtn) closeBtn.style.display = isSoftwareActivated() ? 'block' : 'none';
-    }
-
-    function closeActivationModal() {
-      const modal = document.getElementById('modal-activation');
-      if (modal) modal.style.display = 'none';
-    }
-
-    const btnShowKey = document.getElementById('btn-show-license-key');
-    const navItemLicense = document.getElementById('nav-item-license');
-    const btnCloseAct = document.getElementById('btn-close-activation-modal');
-    const btnAutoGen = document.getElementById('btn-auto-gen-key');
+    // ---- LICENSE ACTIVATION SYSTEM ----
     const btnVerifyKey = document.getElementById('btn-verify-key');
-    const btnDemoMode = document.getElementById('btn-demo-mode');
     const keyInput = document.getElementById('activation-key-input');
     const hwidDisplay = document.getElementById('activation-hwid-display');
     const statusBadge = document.getElementById('activation-status-badge');
-
-    if (btnShowKey) btnShowKey.addEventListener('click', showActivationModal);
-    if (navItemLicense) navItemLicense.addEventListener('click', showActivationModal);
-    if (btnCloseAct) btnCloseAct.addEventListener('click', closeActivationModal);
-
-    if (btnAutoGen && hwidDisplay && keyInput) {
-      btnAutoGen.addEventListener('click', async () => {
-        const hwid = hwidDisplay.textContent.trim();
-        const generatedKey = await computeHmacKey(hwid);
-        keyInput.value = generatedKey;
-        toast('info', 'Keygen Generated', `Kunci Aktivasi untuk ${hwid}: ${generatedKey}`);
-      });
-    }
 
     if (btnVerifyKey && keyInput && hwidDisplay) {
       btnVerifyKey.addEventListener('click', async () => {
@@ -684,28 +665,21 @@ const App = (() => {
           toast('success', 'Lisensi Aktivasi Berhasil!', '✅ Software JRT Tech ANALIST Pro teraktivasi penuh.');
           setTimeout(closeActivationModal, 1200);
         } else {
-          toast('error', 'Kunci Aktivasi Salah', '❌ Key tidak cocok dengan HWID ini. Gunakan jrt-keygen.py untuk generate key.');
+          toast('error', 'Kunci Aktivasi Salah', '❌ Key tidak cocok dengan HWID ini. Hubungi Admin JRT Tech.');
         }
       });
     }
 
-    if (btnDemoMode) {
-      btnDemoMode.addEventListener('click', () => {
-        closeActivationModal();
-        toast('info', 'Mode Trial / Demo', '▶ Berjalan dalam Mode Trial / Demo.');
-      });
-    }
-
     // Auto-check activation on launch
-    const isActivated = localStorage.getItem('jrt_license_activated') === 'true';
-    if (isActivated && statusBadge) {
-      statusBadge.style.background = 'rgba(71,255,122,0.15)';
-      statusBadge.style.borderColor = '#47FF7A';
-      statusBadge.style.color = '#47FF7A';
-      statusBadge.textContent = 'STATUS: TERAKTIVASI LENGKAP ✓';
+    if (isSoftwareActivated()) {
+      if (statusBadge) {
+        statusBadge.style.background = 'rgba(71,255,122,0.15)';
+        statusBadge.style.borderColor = '#47FF7A';
+        statusBadge.style.color = '#47FF7A';
+        statusBadge.textContent = 'STATUS: TERAKTIVASI LENGKAP ✓';
+      }
     } else {
-      // Auto open modal on launch if not activated
-      setTimeout(showActivationModal, 600);
+      showActivationModal();
     }
 
     // Logger page controls
