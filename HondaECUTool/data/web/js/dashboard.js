@@ -156,6 +156,24 @@ const App = (() => {
     return saved;
   }
 
+  function getHwidValue() {
+    const hwidDisplay = document.getElementById('activation-hwid-display');
+    if (!hwidDisplay) return "JRT-884A-99F1-33BC";
+    return (hwidDisplay.value || hwidDisplay.textContent || "JRT-884A-99F1-33BC").trim();
+  }
+
+  function copyHwidToClipboard() {
+    const hwidText = getHwidValue();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(hwidText);
+    } else {
+      const hwidDisplay = document.getElementById('activation-hwid-display');
+      if (hwidDisplay && hwidDisplay.select) hwidDisplay.select();
+      document.execCommand('copy');
+    }
+    toast('success', 'HWID Disalin! 📋', `HWID (${hwidText}) telah disalin ke clipboard.`);
+  }
+
   function showActivationModal() {
     const modal = document.getElementById('modal-activation');
     const closeBtn = document.getElementById('btn-close-activation-modal');
@@ -183,6 +201,63 @@ const App = (() => {
     const cleanHwid = (hwidText || "JRT-884A-99F1-33BC").replace(/[^A-Z0-9-]/gi, '').trim().toUpperCase();
     const hexStr = pureHmacSha256(MASTER_SECRET, cleanHwid);
     return `KEY-${hexStr.substring(0, 4)}-${hexStr.substring(4, 8)}-${hexStr.substring(8, 12)}-${hexStr.substring(12, 16)}`;
+  }
+
+  async function verifyActivationKey() {
+    const hwid = getHwidValue();
+    const keyInput = document.getElementById('activation-key-input');
+    const statusBadge = document.getElementById('activation-status-badge');
+
+    const enteredKey = (keyInput ? keyInput.value : '').replace(/[^A-Z0-9-]/gi, '').trim().toUpperCase();
+    if (!enteredKey) {
+      toast('error', 'Kunci Kosong', 'Masukkan Kunci Aktivasi terlebih dahulu.');
+      return;
+    }
+
+    const expectedKey = computeHmacKey(hwid);
+    const cleanEntered = enteredKey.replace(/-/g, '');
+    const cleanExpected = expectedKey.replace(/-/g, '');
+
+    const isValid = (cleanEntered === cleanExpected);
+
+    // Persist license on disk via backend Python server
+    try {
+      await fetch('/api/license/activate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: enteredKey })
+      });
+    } catch (e) {}
+
+    if (isValid) {
+      localStorage.setItem('jrt_license_activated', 'true');
+      localStorage.setItem('jrt_license_key', expectedKey);
+      if (statusBadge) {
+        statusBadge.style.background = 'rgba(71,255,122,0.15)';
+        statusBadge.style.borderColor = '#47FF7A';
+        statusBadge.style.color = '#47FF7A';
+        statusBadge.textContent = 'STATUS: TERAKTIVASI LENGKAP ✓';
+      }
+      toast('success', 'Lisensi Aktivasi Berhasil!', '✅ Software JRT Tech ANALIST Pro teraktivasi penuh.');
+      closeActivationModal();
+      navigate('dashboard');
+    } else {
+      toast('error', 'Kunci Aktivasi Salah', `❌ Key (${enteredKey}) tidak cocok dengan HWID (${hwid}).`);
+    }
+  }
+
+  function resetLicense() {
+    const statusBadge = document.getElementById('activation-status-badge');
+    localStorage.removeItem('jrt_license_activated');
+    localStorage.removeItem('jrt_license_key');
+    if (statusBadge) {
+      statusBadge.style.background = 'rgba(255,87,34,0.15)';
+      statusBadge.style.borderColor = '#FF5722';
+      statusBadge.style.color = '#FF5722';
+      statusBadge.textContent = '🔒 STATUS: TERKUNCI (BELUM DIAKTIVASI)';
+    }
+    toast('info', 'Status Lisensi Direset', 'Software kembali terkunci. Silakan uji pengisian Kunci Aktivasi.');
+    showActivationModal();
   }
 
   // ---- Page navigation ----
@@ -661,6 +736,24 @@ const App = (() => {
 
   // ---- Init ----
   function init() {
+    // 1. Setup license activation FIRST before any other module initializers
+    const btnVerifyKey = document.getElementById('btn-verify-key');
+    const btnCopyHwid = document.getElementById('btn-copy-hwid');
+    const btnResetLicense = document.getElementById('btn-reset-license');
+    const btnCloseAct = document.getElementById('btn-close-activation-modal');
+    const navItemLicense = document.getElementById('nav-item-license');
+    const hwidDisplay = document.getElementById('activation-hwid-display');
+
+    if (btnVerifyKey) btnVerifyKey.addEventListener('click', verifyActivationKey);
+    if (btnCopyHwid) btnCopyHwid.addEventListener('click', copyHwidToClipboard);
+    if (btnResetLicense) btnResetLicense.addEventListener('click', resetLicense);
+    if (btnCloseAct) btnCloseAct.addEventListener('click', () => {
+      if (isSoftwareActivated()) closeActivationModal();
+      else toast('error', '🔒 Software Terkunci!', 'Masukkan Kunci Aktivasi resmi.');
+    });
+    if (navItemLicense) navItemLicense.addEventListener('click', showActivationModal);
+    if (hwidDisplay) hwidDisplay.addEventListener('click', copyHwidToClipboard);
+
     runSplashScreen();
     applyTheme(_theme);
     loadSerialPorts();
@@ -744,103 +837,8 @@ const App = (() => {
     if(typeof DynoUI !== 'undefined') DynoUI.init();
     if(typeof LivePerformance !== 'undefined') LivePerformance.init();
 
-    // ---- LICENSE ACTIVATION SYSTEM ----
-    const navItemLicense = document.getElementById('nav-item-license');
-    const btnCloseAct = document.getElementById('btn-close-activation-modal');
-    const btnVerifyKey = document.getElementById('btn-verify-key');
-    const btnResetLicense = document.getElementById('btn-reset-license');
-    const btnCopyHwid = document.getElementById('btn-copy-hwid');
-    const keyInput = document.getElementById('activation-key-input');
-    const hwidDisplay = document.getElementById('activation-hwid-display');
+    // Auto-check activation status badge on launch
     const statusBadge = document.getElementById('activation-status-badge');
-
-    function getHwidValue() {
-      if (!hwidDisplay) return "JRT-884A-99F1-33BC";
-      return (hwidDisplay.value || hwidDisplay.textContent || "JRT-884A-99F1-33BC").trim();
-    }
-
-    function copyHwidToClipboard() {
-      const hwidText = getHwidValue();
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(hwidText);
-      } else {
-        if (hwidDisplay && hwidDisplay.select) hwidDisplay.select();
-        document.execCommand('copy');
-      }
-      toast('success', 'HWID Disalin! 📋', `HWID (${hwidText}) telah disalin ke clipboard.`);
-    }
-
-    if (btnCopyHwid) btnCopyHwid.addEventListener('click', copyHwidToClipboard);
-    if (hwidDisplay) {
-      hwidDisplay.addEventListener('click', () => {
-        if (hwidDisplay.select) hwidDisplay.select();
-        copyHwidToClipboard();
-      });
-    }
-
-    if (navItemLicense) navItemLicense.addEventListener('click', showActivationModal);
-    if (btnCloseAct) btnCloseAct.addEventListener('click', () => {
-      if (isSoftwareActivated()) {
-        closeActivationModal();
-      } else {
-        toast('error', '🔒 Software Terkunci!', 'Masukkan Kunci Aktivasi resmi untuk membuka software.');
-      }
-    });
-
-    if (btnVerifyKey && keyInput) {
-      btnVerifyKey.addEventListener('click', async () => {
-        const hwid = getHwidValue();
-        const enteredKey = keyInput.value.replace(/[^A-Z0-9-]/gi, '').trim().toUpperCase();
-        const expectedKey = computeHmacKey(hwid);
-
-        const cleanEntered = enteredKey.replace(/-/g, '');
-        const cleanExpected = expectedKey.replace(/-/g, '');
-
-        let isValid = (cleanEntered === cleanExpected);
-
-        // Persist license on disk via backend
-        try {
-          await fetch('/api/license/activate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ key: enteredKey })
-          });
-        } catch (e) {}
-
-        if (isValid) {
-          localStorage.setItem('jrt_license_activated', 'true');
-          localStorage.setItem('jrt_license_key', expectedKey);
-          if (statusBadge) {
-            statusBadge.style.background = 'rgba(71,255,122,0.15)';
-            statusBadge.style.borderColor = '#47FF7A';
-            statusBadge.style.color = '#47FF7A';
-            statusBadge.textContent = 'STATUS: TERAKTIVASI LENGKAP ✓';
-          }
-          toast('success', 'Lisensi Aktivasi Berhasil!', '✅ Software JRT Tech ANALIST Pro teraktivasi penuh.');
-          closeActivationModal();
-          navigate('dashboard');
-        } else {
-          toast('error', 'Kunci Aktivasi Salah', `❌ Key (${enteredKey}) tidak cocok dengan HWID (${hwid}).`);
-        }
-      });
-    }
-
-    if (btnResetLicense) {
-      btnResetLicense.addEventListener('click', () => {
-        localStorage.removeItem('jrt_license_activated');
-        localStorage.removeItem('jrt_license_key');
-        if (statusBadge) {
-          statusBadge.style.background = 'rgba(255,87,34,0.15)';
-          statusBadge.style.borderColor = '#FF5722';
-          statusBadge.style.color = '#FF5722';
-          statusBadge.textContent = '🔒 STATUS: TERKUNCI (BELUM DIAKTIVASI)';
-        }
-        toast('info', 'Status Lisensi Direset', 'Software kembali terkunci. Silakan uji pengisian Kunci Aktivasi.');
-        showActivationModal();
-      });
-    }
-
-    // Auto-check activation on launch
     if (isSoftwareActivated()) {
       if (statusBadge) {
         statusBadge.style.background = 'rgba(71,255,122,0.15)';
@@ -1216,7 +1214,10 @@ const App = (() => {
     }, 40);
   }
 
-  return { init, toast, navigate, applyTheme, refreshStatus, formatBytes, formatUptime, updateRaceCluster };
+  return {
+    init, toast, navigate, applyTheme, refreshStatus, formatBytes, formatUptime, updateRaceCluster,
+    verifyActivationKey, copyHwidToClipboard, resetLicense, showActivationModal, closeActivationModal
+  };
 })();
 
 document.addEventListener('DOMContentLoaded', () => {

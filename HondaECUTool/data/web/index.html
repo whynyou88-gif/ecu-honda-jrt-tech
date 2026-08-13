@@ -2657,7 +2657,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 <div id="modal-activation" class="modal-backdrop" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(6,9,15,0.96); z-index:9999999; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
   <div style="background:#121A24; border:2px solid #FF5722; border-radius:14px; padding:32px; width:500px; max-width:94%; color:#FFF; box-shadow:0 0 50px rgba(255,87,34,0.4); text-align:center; position:relative;">
-    <button id="btn-close-activation-modal" style="position:absolute; top:12px; right:16px; background:none; border:none; color:#AAA; font-size:24px; cursor:pointer;" title="Tutup Modal">&times;</button>
+    <button id="btn-close-activation-modal" onclick="App.closeActivationModal()" style="position:absolute; top:12px; right:16px; background:none; border:none; color:#AAA; font-size:24px; cursor:pointer;" title="Tutup Modal">&times;</button>
     <div style="font-size:42px; margin-bottom:8px;">🔒</div>
     <h2 style="color:#FF5722; font-weight:900; margin-bottom:4px; font-size:22px; letter-spacing:0.5px;">JRT TECH ANALIST PRO — AKTIVASI SOFTWARE</h2>
     <p style="font-size:12px; color:#A0AAB0; margin-bottom:14px;">Software terkunci. Silakan masukkan Kunci Aktivasi resmi untuk membuka akses.</p>
@@ -2669,7 +2669,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <div style="background:#06090F; border:1px dashed #00E5FF; border-radius:8px; padding:14px; margin-bottom:18px; text-align:left;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
         <div style="font-size:10px; font-weight:700; color:#00E5FF;">CUSTOMER HARDWARE ID (HWID PC):</div>
-        <button id="btn-copy-hwid" style="background:rgba(0,229,255,0.15); border:1px solid #00E5FF; color:#00E5FF; border-radius:4px; padding:3px 10px; font-size:11px; font-weight:800; cursor:pointer;" title="Salin HWID ke Clipboard">
+        <button id="btn-copy-hwid" onclick="App.copyHwidToClipboard()" style="background:rgba(0,229,255,0.15); border:1px solid #00E5FF; color:#00E5FF; border-radius:4px; padding:3px 10px; font-size:11px; font-weight:800; cursor:pointer;" title="Salin HWID ke Clipboard">
           <i class="fa fa-copy"></i> Salin HWID
         </button>
       </div>
@@ -2683,8 +2683,8 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
 
     <div style="display:flex; flex-direction:column; gap:10px;">
-      <button id="btn-verify-key" style="background:#FF5722; color:#FFF; border:none; border-radius:6px; padding:12px 24px; font-weight:900; cursor:pointer; font-size:13px; width:100%;">✅ Aktifkan &amp; Buka Software</button>
-      <button id="btn-reset-license" style="background:rgba(255,255,255,0.05); color:#777; border:1px solid #333; border-radius:6px; padding:8px; font-size:10px; cursor:pointer;">🔒 Lock / Reset Status Lisensi (Test Mode)</button>
+      <button id="btn-verify-key" onclick="App.verifyActivationKey()" style="background:#FF5722; color:#FFF; border:none; border-radius:6px; padding:12px 24px; font-weight:900; cursor:pointer; font-size:13px; width:100%;">✅ Aktifkan &amp; Buka Software</button>
+      <button id="btn-reset-license" onclick="App.resetLicense()" style="background:rgba(255,255,255,0.05); color:#777; border:1px solid #333; border-radius:6px; padding:8px; font-size:10px; cursor:pointer;">🔒 Lock / Reset Status Lisensi (Test Mode)</button>
     </div>
   </div>
 </div>
