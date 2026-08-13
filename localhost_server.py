@@ -3177,6 +3177,9 @@ async def api_reset_ecu(request):
         ecu.send_command([0x72], [0x00, 0x00], retries=2)
         log_event("[ECU] Soft Reset ECU executed.")
         return web.json_response({"status": "ok", "message": "ECU Soft Reset executed successfully"})
+    except Exception as e:
+        return web.json_response({"status": "error", "message": str(e)}, status=500)
+
 import platform
 import uuid
 import hashlib
