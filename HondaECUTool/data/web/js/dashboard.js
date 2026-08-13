@@ -58,7 +58,10 @@ const App = (() => {
   function showActivationModal() {
     const modal = document.getElementById('modal-activation');
     const closeBtn = document.getElementById('btn-close-activation-modal');
-    if (modal) modal.style.display = 'flex';
+    if (modal) {
+      modal.style.setProperty('display', 'flex', 'important');
+      modal.style.setProperty('z-index', '9999999', 'important');
+    }
     if (closeBtn) closeBtn.style.display = isSoftwareActivated() ? 'block' : 'none';
   }
 
