@@ -51,7 +51,17 @@ const App = (() => {
   // ---- Page navigation ----
   const _initializedPages = {};
 
+  function isSoftwareActivated() {
+    return localStorage.getItem('jrt_license_activated') === 'true';
+  }
+
   function navigate(page) {
+    if (!isSoftwareActivated()) {
+      showActivationModal();
+      toast('error', '🔒 Software Terkunci!', 'Masukkan Kunci Aktivasi HWID resmi untuk membuka akses software.');
+      return;
+    }
+
     _currentPage = page;
     document.querySelectorAll('.nav-item').forEach(n => {
       n.classList.toggle('active', n.dataset.page === page);
@@ -282,6 +292,12 @@ const App = (() => {
 
   // ---- ECU connect button ----
   async function handleConnectBtn() {
+    if (!isSoftwareActivated()) {
+      showActivationModal();
+      toast('error', '🔒 Software Terkunci!', 'Lisensi aktivasi diperlukan untuk menghubungkan ECU.');
+      return;
+    }
+
     const btn = document.getElementById('btn-connect');
     if (!btn) return;
 
@@ -617,7 +633,9 @@ const App = (() => {
 
     function showActivationModal() {
       const modal = document.getElementById('modal-activation');
+      const closeBtn = document.getElementById('btn-close-activation-modal');
       if (modal) modal.style.display = 'flex';
+      if (closeBtn) closeBtn.style.display = isSoftwareActivated() ? 'block' : 'none';
     }
 
     function closeActivationModal() {
