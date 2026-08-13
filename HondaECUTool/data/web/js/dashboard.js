@@ -174,7 +174,9 @@ const App = (() => {
 
   function closeActivationModal() {
     const modal = document.getElementById('modal-activation');
-    if (modal) modal.style.display = 'none';
+    if (modal) {
+      modal.style.setProperty('display', 'none', 'important');
+    }
   }
 
   function computeHmacKey(hwidText) {
@@ -788,12 +790,26 @@ const App = (() => {
     if (btnVerifyKey && keyInput) {
       btnVerifyKey.addEventListener('click', async () => {
         const hwid = getHwidValue();
-        const enteredKey = keyInput.value.trim().toUpperCase();
-        const expectedKey = await computeHmacKey(hwid);
+        const enteredKey = keyInput.value.replace(/[^A-Z0-9-]/gi, '').trim().toUpperCase();
+        const expectedKey = computeHmacKey(hwid);
 
-        if (enteredKey === expectedKey) {
+        const cleanEntered = enteredKey.replace(/-/g, '');
+        const cleanExpected = expectedKey.replace(/-/g, '');
+
+        let isValid = (cleanEntered === cleanExpected);
+
+        // Persist license on disk via backend
+        try {
+          await fetch('/api/license/activate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ key: enteredKey })
+          });
+        } catch (e) {}
+
+        if (isValid) {
           localStorage.setItem('jrt_license_activated', 'true');
-          localStorage.setItem('jrt_license_key', enteredKey);
+          localStorage.setItem('jrt_license_key', expectedKey);
           if (statusBadge) {
             statusBadge.style.background = 'rgba(71,255,122,0.15)';
             statusBadge.style.borderColor = '#47FF7A';
@@ -801,9 +817,10 @@ const App = (() => {
             statusBadge.textContent = 'STATUS: TERAKTIVASI LENGKAP ✓';
           }
           toast('success', 'Lisensi Aktivasi Berhasil!', '✅ Software JRT Tech ANALIST Pro teraktivasi penuh.');
-          setTimeout(closeActivationModal, 1200);
+          closeActivationModal();
+          navigate('dashboard');
         } else {
-          toast('error', 'Kunci Aktivasi Salah', '❌ Key tidak cocok dengan HWID ini. Hubungi Admin JRT Tech.');
+          toast('error', 'Kunci Aktivasi Salah', `❌ Key (${enteredKey}) tidak cocok dengan HWID (${hwid}).`);
         }
       });
     }

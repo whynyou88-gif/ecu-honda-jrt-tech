@@ -2648,6 +2648,13 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 <!-- ===== MODAL: HWID LICENSE ACTIVATION SYSTEM ===== -->
+<script>
+  (function() {
+    if (localStorage.getItem('jrt_license_activated') !== 'true') {
+      document.write('<style>#modal-activation { display: flex !important; z-index: 9999999 !important; }</style>');
+    }
+  })();
+</script>
 <div id="modal-activation" class="modal-backdrop" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(6,9,15,0.96); z-index:9999999; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
   <div style="background:#121A24; border:2px solid #FF5722; border-radius:14px; padding:32px; width:500px; max-width:94%; color:#FFF; box-shadow:0 0 50px rgba(255,87,34,0.4); text-align:center; position:relative;">
     <button id="btn-close-activation-modal" style="position:absolute; top:12px; right:16px; background:none; border:none; color:#AAA; font-size:24px; cursor:pointer;" title="Tutup Modal">&times;</button>
