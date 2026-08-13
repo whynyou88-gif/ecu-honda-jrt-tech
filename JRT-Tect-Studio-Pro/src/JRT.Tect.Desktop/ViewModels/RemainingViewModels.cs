@@ -159,23 +159,7 @@ public partial class MapEditorViewModel : ObservableObject
     }
 }
 
-public partial class DynoTestViewModel : ObservableObject
-{
-    [ObservableProperty]
-    private double _stockPeakHp = 8.5;
 
-    [ObservableProperty]
-    private double _stockPeakTq = 10.8;
-
-    [ObservableProperty]
-    private double _remapPeakHp = 10.4;
-
-    [ObservableProperty]
-    private double _remapPeakTq = 12.2;
-
-    [ObservableProperty]
-    private string _hpGainText = "+1.9 HP Gain (+22.1%)";
-}
 
 public partial class FlashEcuViewModel : ObservableObject
 {

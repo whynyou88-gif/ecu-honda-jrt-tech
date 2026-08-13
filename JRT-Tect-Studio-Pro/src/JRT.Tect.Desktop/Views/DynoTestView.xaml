@@ -4,8 +4,41 @@
              Foreground="#FFFFFF">
     <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="20">
         <StackPanel>
-            <!-- DYNO RUN COMPARISON SUMMARY -->
+            <!-- TOP LIVE STATUS BAR -->
             <Border Background="#121A24" BorderBrush="#00E5FF" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                            <TextBlock Text="⚡ GPS ROAD DYNO TEST STUDIO — " Foreground="#00E5FF" FontWeight="ExtraBold" FontSize="14"/>
+                            <TextBlock Text="{Binding StatusText}" Foreground="#47FF7A" FontWeight="Bold" FontSize="13"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="GPS Fix: " Foreground="#A0AAB0" FontSize="11"/>
+                            <TextBlock Text="{Binding GpsFixText}" Foreground="#00E5FF" FontWeight="Bold" FontSize="11" Margin="0,0,16,0"/>
+                            <TextBlock Text="Kecepatan: " Foreground="#A0AAB0" FontSize="11"/>
+                            <TextBlock Text="{Binding LiveSpeed}" Foreground="#FF5722" FontWeight="ExtraBold" FontSize="11"/>
+                            <TextBlock Text=" km/h  |  Akselerasi: " Foreground="#A0AAB0" FontSize="11"/>
+                            <TextBlock Text="{Binding LiveAcc}" Foreground="#47FF7A" FontWeight="ExtraBold" FontSize="11"/>
+                            <TextBlock Text=" m/s²" Foreground="#A0AAB0" FontSize="11"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Content="🔄 Toggle Mode Simulasi" Command="{Binding ToggleSimulationModeCommand}" Background="#2A384A" Foreground="White" FontWeight="Bold" Padding="12,6" Margin="0,0,8,0"/>
+                        <Button Content="▶ Start Run" Command="{Binding StartRunCommand}" Background="#47FF7A" Foreground="Black" FontWeight="ExtraBold" Padding="14,6" Margin="0,0,8,0"/>
+                        <Button Content="⏹ Cancel Run" Command="{Binding CancelRunCommand}" Background="#FF3D3D" Foreground="White" FontWeight="Bold" Padding="12,6" Margin="0,0,8,0"/>
+                        <Button Content="💾 Save Run" Command="{Binding SaveRunCommand}" Background="#FF5722" Foreground="White" FontWeight="Bold" Padding="12,6"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- DYNO RUN COMPARISON SUMMARY -->
+            <Border Background="#15161D" BorderBrush="#222228" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -14,13 +47,23 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0">
                         <TextBlock Text="Run #1 (Stock Base)" Foreground="#FF5722" FontWeight="Bold" FontSize="13"/>
-                        <TextBlock Text="Peak HP: 8.5 HP @ 6300 RPM" Foreground="#A0AAB0" FontSize="11" Margin="0,2,0,0"/>
-                        <TextBlock Text="Peak Tq: 10.8 Nm @ 5000 RPM" Foreground="#A0AAB0" FontSize="11"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock Text="Peak HP: " Foreground="#A0AAB0" FontSize="11"/>
+                            <TextBlock Text="{Binding StockPeakHp}" Foreground="White" FontWeight="Bold" FontSize="11"/>
+                            <TextBlock Text=" HP  |  Peak Tq: " Foreground="#A0AAB0" FontSize="11"/>
+                            <TextBlock Text="{Binding StockPeakTq}" Foreground="White" FontWeight="Bold" FontSize="11"/>
+                            <TextBlock Text=" Nm" Foreground="#A0AAB0" FontSize="11"/>
+                        </StackPanel>
                     </StackPanel>
                     <StackPanel Grid.Column="1">
                         <TextBlock Text="Run #2 (Remap Stage 1)" Foreground="#00E5FF" FontWeight="Bold" FontSize="13"/>
-                        <TextBlock Text="Peak HP: 10.4 HP @ 6700 RPM" Foreground="#47FF7A" FontSize="11" Margin="0,2,0,0"/>
-                        <TextBlock Text="Peak Tq: 12.2 Nm @ 5500 RPM" Foreground="#47FF7A" FontSize="11"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock Text="Peak HP: " Foreground="#A0AAB0" FontSize="11"/>
+                            <TextBlock Text="{Binding RemapPeakHp}" Foreground="#47FF7A" FontWeight="Bold" FontSize="11"/>
+                            <TextBlock Text=" HP  |  Peak Tq: " Foreground="#A0AAB0" FontSize="11"/>
+                            <TextBlock Text="{Binding RemapPeakTq}" Foreground="#47FF7A" FontWeight="Bold" FontSize="11"/>
+                            <TextBlock Text=" Nm" Foreground="#A0AAB0" FontSize="11"/>
+                        </StackPanel>
                     </StackPanel>
                     <Border Grid.Column="2" Background="#06090F" CornerRadius="6" Padding="16,8" BorderBrush="#47FF7A" BorderThickness="1">
                         <TextBlock Text="{Binding HpGainText}" Foreground="#47FF7A" FontWeight="ExtraBold" FontSize="14"/>
@@ -28,11 +71,32 @@
                 </Grid>
             </Border>
 
-            <!-- DYNO GRAPH CANVAS PLACEHOLDER -->
-            <Border Background="#06090F" BorderBrush="#222228" BorderThickness="1" CornerRadius="8" Height="400" Padding="20">
+            <!-- DYNO GRAPH VISUALIZER -->
+            <Border Background="#06090F" BorderBrush="#222228" BorderThickness="1" CornerRadius="8" Height="360" Padding="20" Margin="0,0,0,16">
                 <Grid>
-                    <TextBlock Text="⚡ DYNO GRAPH VISUALIZER (HORSEPOWER &amp; TORQUE VS RPM)" Foreground="#66666E" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="📈 HORSEPOWER &amp; TORQUE CURVE (VS RPM)" Foreground="#00E5FF" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="⚡ REAL-TIME DYNO TEST GRAPH VISUALIZER" Foreground="#66666E" FontWeight="ExtraBold" FontSize="16" HorizontalAlignment="Center" Margin="0,0,0,6"/>
+                        <TextBlock Text="Akselerasi &amp; Drivetrain Loss Regresi Eksponensial (OpenDyno Engine)" Foreground="#47FF7A" FontSize="12" HorizontalAlignment="Center"/>
+                    </StackPanel>
                 </Grid>
+            </Border>
+
+            <!-- RPM RATIO CALIBRATION HELPER -->
+            <Border Background="#15161D" BorderBrush="#222228" BorderThickness="1" CornerRadius="8" Padding="16">
+                <StackPanel>
+                    <TextBlock Text="🔧 WIZARD KALIBRASI RASIO RPM (SPEED -> RPM)" Foreground="#FF5722" FontWeight="Bold" FontSize="12" Margin="0,0,0,12"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Kecepatan Konstan (km/h):" Foreground="#A0AAB0" FontSize="11" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <TextBox Text="{Binding CalibSpeedKmh}" Width="80" Height="28" Background="#06090F" Foreground="White" VerticalContentAlignment="Center" Margin="0,0,16,0"/>
+
+                        <TextBlock Text="RPM Sebenarnya (Tacho/OBD):" Foreground="#A0AAB0" FontSize="11" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <TextBox Text="{Binding CalibActualRpm}" Width="90" Height="28" Background="#06090F" Foreground="White" VerticalContentAlignment="Center" Margin="0,0,16,0"/>
+
+                        <Button Content="🧮 Hitung Rasio RPM" Command="{Binding CalculateRpmRatioCommand}" Background="#FF5722" Foreground="White" FontWeight="Bold" Padding="12,6" Margin="0,0,16,0"/>
+                        <TextBlock Text="{Binding CalibResultText}" Foreground="#47FF7A" FontWeight="Bold" FontSize="12" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
             </Border>
         </StackPanel>
     </ScrollViewer>
